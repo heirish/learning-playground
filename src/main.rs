@@ -1,3 +1,6 @@
+use core::num;
+use std::{fmt::Error, result};
+use std::num::ParseIntError;
 static MY_STATIC:i32 =42;
 static mut MY_MUT_STATIC:i32 =42;
 
@@ -474,7 +477,206 @@ fn loop_iter() {
     let iter_number:Vec<_> = numbers.iter().map(|&x| x*x).collect();
     println!("{:?}", iter_number);
 }
-fn main() {
+
+fn add(x:i32, y:i32) -> i32 {
+    x+y
+}
+fn change_i32(mut x:i32) {
+    x += 4;
+    println!("changed:{x}");
+}
+fn modify_i32(x:&mut i32){
+    *x += 4;
+}
+fn function_copy_by_value() {
+   let a = 1;
+   let b = 2;
+   let c = add(a,b);
+   println!("{c}");
+   let mut x = 1;
+   change_i32(x);
+   println!("after change_i32 x:{}", {x});
+   modify_i32(&mut x);
+   println!("after modify_i32 x:{}", {x});
+}
+
+
+fn move_func(p1:i32, p2:String) {
+    println!("p1:{}, p2:{}", p1, p2);
+}
+fn unmutiable_borrow(p1:i32, p2:&String) {
+    println!("p1:{}, p2:{}", p1, (*p2).to_uppercase());
+}
+#[derive(Debug)]
+struct Point1 {
+    x:i32,
+    y:i32
+}
+fn mutable_borrow(point:&mut Point1){
+    point.x +=1;
+    point.y += 2;
+}
+fn function_param_pass(){
+    let n = 12;
+    let s = String::from("oo");
+    move_func(n, s); //copy i32, move String
+    println!("n is {}", n);
+    //println!("s is {}", s); //error borrow of moved value.
+
+    let s = String::from("oo");
+    unmutiable_borrow(n, &s);
+    println!("n is {}", n);
+    println!("s is {}", s);
+
+    let mut point = Point1{x:3,y:5};
+    println!("{:?}", point);
+    mutable_borrow(&mut point);
+    println!("{:?}", point);
+}
+
+fn func_copy_back() -> i32 {
+  let n = 42;
+  n
+}
+fn func_non_copy_back() -> String {
+    let s = String::from("hello");
+    s  //所有权转移， move
+}
+fn get_mess(mark:i32) -> &'static str {
+ if mark == 0 {
+    "smile"
+ } else {
+    "cry"
+ }
+}
+fn function_return() {
+    let i = func_copy_back();
+    println!("{i}");
+    let s = func_non_copy_back();
+    println!("{}", s);
+    println!("{}", get_mess(0));
+}
+
+fn op_twice(f:fn(i32)->i32, x:i32)->i32 {
+    f(f(x))
+}
+fn mul(x:i32) -> i32 {
+    x * x
+}
+fn add1(x:i32) -> i32 {
+ x + 10
+}
+fn high_order_function_test() {
+    let result = op_twice(mul, 3);
+    println!("{result}");
+    println!("{}", op_twice(add1, 10));
+
+    //数学计算
+    let numbers  = vec![1,2,3,4,5,6,7];
+    //map
+    let res:Vec<_> = numbers.iter().map(|&x| x+x).collect();
+    println!("{:?}", res);
+    //filter
+    //let events:Vec<_> = numbers.into_iter().filter(|&x| x %2 == 0).collect();
+    let events = numbers.into_iter().filter(|&x| x %2 == 0).collect::<Vec<_>>();
+    println!("{:?}", events);
+    //fold/reduce)
+    let sum = events.iter().fold(0, |acc, &x| acc +x);
+    println!("sum:{}", sum);    
+}
+
+//beter to self designed Error
+fn devide(a:i32, b:i32) -> Result<f64, String> {
+    if b == 0 {
+        return Err(String::from("can not devide 0"));
+    } else {
+        let a = a as f64;
+        let b = b as f64;
+        return Ok(a/b);
+    }   
+}
+fn find_element(array:&[i32], target:i32) -> Option<usize> {
+    for (index, &element) in array.iter().enumerate() {
+        if element == target {
+            return Some(index);
+        }
+    }
+    None
+}
+fn result_option_panic_test() {
+    //recoverable error:Result/Option
+    //unrecoverble error:panic!, abort process.
+    //Result
+    match devide(1, 2) {
+        Ok(number) => println!("result:{}", number),
+        Err(e) => println!("devide failed.{:?}", e),
+    }
+    match devide(1, 0) {
+        Ok(number) => println!("result:{}", number),
+        Err(e) => println!("devide failed.{:?}", e),
+    }
+    //Option
+    let  arr = [1,2,3,4,5];
+    match find_element(&arr, 4) {
+        Some(index) =>println!("found target at index:{}", index),
+        None => println!("can not find target")
+    }
+    match find_element(&arr, 7) {
+        Some(index) =>println!("found target at index:{}", index),
+        None => println!("can not find target")
+    }
+    //panic!
+    let  arr = vec![1,2,3,4,5];
+    arr[43];
+}
+
+fn find_first_even(numbers:Vec<i32>) -> Option<i32> {
+    let first_even = numbers.iter().find(|&x| x % 2 == 0)?; //?如果没找到，会提前返回，不会执持接下来的代码
+    println!("Option");
+    Some(*first_even)
+}
+//传递错误
+fn parse_numbers(input:&str) -> Result<i32, ParseIntError> {
+    let val:i32 = input.parse::<i32>()?;
+    Ok(val)
+}
+fn unwrap_(){
+    //unwrap
+    let result_ok: Result<i32, &str> = Ok(32);    
+    let value = result_ok.unwrap();
+    println!("{value}");
+    //直接panic
+    //let result_ok: Result<i32, &str> = Err("ff");    
+    //let value = result_ok.unwrap();
+    //println!("{value}");
+
+    //?:Result时如果为Err直接提前返回， Option时如果为None直接提前返回
+    //Option
+    let numbers = vec![1,2,3,4,5,6];
+    match find_first_even(numbers) {
+        Some(value) => println!("first even value:{}", value),
+        None => println!("No even value found"),
+    };
+    let numbers = vec![1,3,5];
+    match find_first_even(numbers) {
+        Some(value) => println!("first even value:{}", value),
+        None => println!("No even value found"),
+    };
+    //Result
+    match parse_numbers("d") {
+        Ok(value) => println!("parse done, value:{}", value),
+        Err(e) => println!("Fail to parse, error:{:?}", e)
+    }
+    match parse_numbers("3") {
+        Ok(value) => println!("parse done, value:{}", value),
+        Err(e) => println!("Fail to parse, error:{:?}", e)
+    }
+}
+
+fn self_def_error_test() {
+
+}
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Hello, world!");
     //const_static_test();
     //basic_data_types();
@@ -491,4 +693,15 @@ fn main() {
     //controlflow, function
     //if_match();
     //loop_iter();
+    //function_copy_by_value();
+    //function_param_pass();   
+    //function_return();
+    //high_order_function_test();
+
+    //error process
+    //result_option_panic_test();
+    //unwrap_();
+    self_def_error_test();
+
+    Ok(())
 }
