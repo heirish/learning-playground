@@ -673,8 +673,147 @@ fn unwrap_(){
     }
 }
 
-fn self_def_error_test() {
+#[derive(Debug)]
+struct MyError {
+    detail:String,
+}
+impl std::fmt::Display for MyError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Custom Error: {}", self.detail)
+    }
+}
+impl std::error::Error for MyError {
+    fn description(&self) -> &str {
+        &self.detail
+    }
+}
+fn func() -> Result<(), MyError> {
+    Err(MyError{detail:"Custom Error".to_owned()})
+}
+fn self_def_error_test() -> Result<(), MyError>{
+    match func() {
+        Ok(_) =>println!("function ok"), 
+        Err(e) => println!("Error: {}", e)
+    };
+    func()?;
+    println!("oo");
+    Ok(())
+}
 
+fn test_borrow_checker() {
+    let mut s = String::from("Hello");
+    //可以同时有多个不可变引用
+    let r1 = &s;
+    let r2 = &s;
+    println!("{} {}", r1, r2);
+
+    let r3 = &mut s;
+    println!("{}", r3);
+    //println!("{} {}", r1, r2);  //这时r1, r2就不能再用了，否则会报错can not borrow s as mutable because is it also borrowed as immutable.
+
+    //lifetime
+    // let result:&str = "ff"; //定义的同时初始化
+    let result:&str;  //定义
+    {
+        result = "ff"; //初始化
+    }
+    println!("{}", result);
+
+    let res:&str;
+    {
+        let r4 = &s;
+        res = ff(r4);
+    }
+    println!("{}", res);
+}
+//手动声明lifetime
+fn ff<'a>(r4: &'a str) -> &'a str {
+    r4
+}
+
+//每个作为引用的参数都会得到它自己的生命周期参数
+//当只有一个输入生命周期时，该生命周期将被分配给所有输出生命周期参数
+fn no_need_mark_lifetime(s:&str) -> &str {
+    s
+}
+//s1, s2实际上会被推断为两个不同的lifetime,这里强制将s1, s2声明为相同的生命周期，性能上会有损耗
+fn longest<'a>(s1:&'a str, s2:&'a str) -> &'a str{
+    if s1.len() > s2.len() {
+        s1
+    } else {
+        s2
+    }
+}
+//使用限定where,更灵活
+fn longest_str<'a,'b,'out>(s1:&'a str, s2:&'b str) -> &'out str 
+where 
+    'a:'out,  //lifetime 'a include lifetime 'b
+    'b:'out,
+{
+    if s1.len() > s2.len() {
+        s1
+    } else {
+        s2
+    }
+}
+//lifetime的主要目的是防止悬垂引用,大多数情况下，lifetime是隐式被推断的
+fn test_lifetime_and_function() {
+    println!("no need {}", no_need_mark_lifetime("hh"));
+
+    let s1 = "Hello World";
+    let s2 = "Hello";
+    println!("{}", longest(s1, s2));
+    println!("{}", longest_str(s1, s2));
+
+    let result :&str;
+    {
+        let r2 = "world";
+        result = longest_str(s1, s2);
+        println!("longest string:{}", result);
+    }
+}
+
+struct MyString<'a> {
+    text:&'a str,
+}
+impl<'a> MyString<'a> {
+    fn get_length(&self) -> usize {
+        self.text.len()
+    }
+    fn modify_data(&mut self)  {
+        self.text = "world";
+    }
+}
+//有返回引用的情况
+struct StringHolder{
+    data:String,
+}
+impl StringHolder {
+    fn get_length(&self)->usize{
+        self.data.len()
+    }
+    //不用手动标注life time，struct带self的函数会自动推断，如get_ref
+    fn get_reference<'a>(&'a self) ->&'a String{
+        &self.data
+    }
+    fn get_ref(&self) -> &String {
+        &self.data
+    }
+}
+//结构体中的引用需要标注生命周期
+//结构体的方法(self等)不需要标注lifetime
+//如果有多个输入lifetime, 但其中一个是对self或不可变self的引用时，因为在这种情况下它是一个方法，所以self的lifetime被分配给所有输出lifetime
+fn test_lifetime_and_struct() {
+    let str1 = String::from("value");
+    let mut x = MyString{text:str1.as_str()};
+    x.modify_data();
+    println!("{}", x.text);
+
+    let mut holder = StringHolder {
+        data:String::from("Hello")
+    };
+    println!("{}", holder.get_reference());
+    println!("{}", holder.get_ref());
 }
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Hello, world!");
@@ -701,7 +840,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     //error process
     //result_option_panic_test();
     //unwrap_();
-    self_def_error_test();
+    //self_def_error_test()?; 
 
+    //borrow,lifetime
+    //test_borrow_checker();
+    //test_lifetime_and_function();
+    //test_lifetime_and_struct();
+    //尽量不要写出需要自己标注生命周期的代码
+
+    //generic
     Ok(())
 }
