@@ -815,6 +815,67 @@ fn test_lifetime_and_struct() {
     println!("{}", holder.get_reference());
     println!("{}", holder.get_ref());
 }
+
+#[derive(Debug)]
+struct Point2<T>{
+    x:T,
+    y:T
+}
+#[derive(Debug)]
+struct PointTwo<T, E> {
+    x:T,
+    y:E    
+}
+fn test_generic_struct() {
+    let c1 = Point2{x:1.0, y:2.0};
+    let c2 = Point2{x:'x', y:'y'};
+    println!("c1 {:?}, c2 {:?}", c1, c2);
+    let c = PointTwo{x:1.0, y:'z'};
+    println!("{:?}", c)
+    //zero-copy abstraction
+}
+
+fn swap<T>(a:T, b:T) ->(T,T) {
+    (b,a)
+}
+struct Point3<T> {
+    x:T,
+    y:T
+}
+//泛型结构体只需要impl上写T，结构体方法不用写T
+impl<T> Point3<T> {
+    fn new(x:T, y:T) -> Self {
+        Self {
+            x,y
+        }
+    }
+    fn get_coordinates(&self) -> (&T, &T) {
+        (&self.x, &self.y)
+    }
+}
+fn test_generic_func() {
+    //1.普通函数，2.结构体中函数
+    let result = swap(0,1);
+    println!("{:?}", result);
+    let result = swap::<f64>(0.1,1.0);
+    println!("{:?}", result);
+    let str2 = swap("hh", "tt");
+    let str2 = swap("hh", "tt");
+    println!("{} {}", str2.0, str2.1);
+    let str2 = swap(str2.0, str2.1);
+    println!("{} {}", str2.0, str2.1);
+
+    //泛型结构体中的方法
+    let i32_point = Point3::new(2, 3);
+    let f64_point = Point3::new(2.0, 3.0);
+    let (x1, y1) = i32_point.get_coordinates();
+    println!("i32 point: x = {} y = {}", x1, y1);
+    let (x2, y2) = f64_point.get_coordinates();
+    println!("f64 point: x = {} y = {}", x2, y2);
+    //String 不要用&str
+    let str_point = Point3::new("xxxx".to_owned(), "yyyy".to_owned());
+    println!("string point x = {}, y= {}", str_point.x, str_point.y);
+}
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Hello, world!");
     //const_static_test();
@@ -849,5 +910,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     //尽量不要写出需要自己标注生命周期的代码
 
     //generic
+    //test_generic_struct();
+    //test_generic_func();
+
+
     Ok(())
 }
