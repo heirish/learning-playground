@@ -876,6 +876,146 @@ fn test_generic_func() {
     let str_point = Point3::new("xxxx".to_owned(), "yyyy".to_owned());
     println!("string point x = {}, y= {}", str_point.x, str_point.y);
 }
+
+trait Greeter {
+    fn greet(&self);
+    fn hello() {
+        println!("hello");
+    }
+}
+struct Person1 {
+    name:String
+}
+impl Greeter for Person1 {
+    fn greet(&self) {
+        println!("{}", self.name)
+    }
+}
+fn test_trait() {
+    let person = Person1 {name:"Yz".to_owned()};
+    person.greet();
+    Person1::hello();
+}
+
+trait Overview {
+    fn overview(&self ) -> String{
+        String::from("default")
+    }
+} 
+struct Obj {
+
+}
+impl Overview for Obj {
+    fn overview(&self) -> String {
+        String::from("obj")
+    }
+}
+//不可变引用
+fn call_obj(item:&impl Overview) {
+    println!("Overview: {}", item.overview());
+}
+//move
+fn call_obj_box(item:Box<dyn Overview>) {
+    println!("Overview:{}", item.overview());
+}
+trait Sale {
+    fn amount(&self) -> f64;
+}
+struct Common(f64);
+impl Sale for Common {
+    fn amount(&self) -> f64 {
+        self.0
+    }
+}
+struct TenDiscount(f64);
+impl Sale for TenDiscount {
+    fn amount(&self) -> f64 {
+        self.0 -10.0
+    }
+}
+struct TenPercent(f64);
+impl Sale for TenPercent {
+    fn amount(&self) -> f64 {
+        self.0 * 0.9
+    }
+}
+fn calculate(sales:&Vec<Box<dyn Sale>>) -> f64 {
+        sales.iter().map(|sale| sale.amount()).sum()
+}
+fn test_trait_object_and_box() {
+    //trait object
+    //在支行时动态分配的对象，运行时泛行，比泛型要灵活的多
+    //可以在集合中混入不同的类型对象,更容易处理相似的数据
+    //有些小小的性能损耗
+    //dyn关键字用于声明trait object的类型
+    //trait object是实现了特定traint的类型实例，但其具体类型在编译时是未知的
+    //因此为了让编译器知道我们正在处理的是trait object,需要在特定名称前面加上dyn关键字。
+    //用于指示编译器处理trait object. 
+    //Immutable Reference: &dyn Trait
+    //mutable Reference: &mut dyn Trait
+    //move: Box<dyn Trait>
+    let a = Obj{};
+    call_obj(&a);
+    println!("{}", a.overview());
+    let b_a = Box::new(Obj{});
+    println!("{}", b_a.overview());
+    call_obj_box(b_a);
+    //println!("{}", b_a.overview()); //error:borrow of moved value
+
+    let c:Box<dyn Sale> = Box::new(Common(100.0));
+    let c = Box::new(Common(100.0));
+    let t1 = Box::new(TenDiscount(100.0));
+    let t2 = Box::new(TenPercent(100.0));
+    let sales:Vec<Box<dyn Sale>> = vec![c, t1, t2];
+    println!("calculate result {}", calculate(&sales));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Hello, world!");
     //const_static_test();
@@ -913,6 +1053,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     //test_generic_struct();
     //test_generic_func();
 
+    //trait
+    //为不同类型提供相同的行为
+    //可以内置常量，在程序的整个生命周期内都是有效的
+    //可以提供默认的方法实现
+    //类型可以实现多个trait,实现行为组合
+    //边界
+    //trait alias
+    //test_trait();
+    test_trait_object_and_box();
+        
 
     Ok(())
 }
+
