@@ -968,53 +968,75 @@ fn test_trait_object_and_box() {
     let t2 = Box::new(TenPercent(100.0));
     let sales:Vec<Box<dyn Sale>> = vec![c, t1, t2];
     println!("calculate result {}", calculate(&sales));
+}
 
+trait Another {
+    fn hell(&self) {
+        println!("welcome to hell");
+    }
+}
+struct Course {
+    headline:String,
+    author:String,
+}
+struct AnotherCourse {
+    headline:String,
+    author:String,
+}
+impl Overview for Course {}
+impl Another for Course {}
+impl Overview for AnotherCourse {}
+fn call_overview(item:&impl Overview) {
+    println!("Overview {}", item.overview());
+}
+fn call_overview_generic<T:Overview>(item:&T) {
+    println!("Overview {}", item.overview());
+}
+fn call_overviewT(item:&impl Overview, item1: &impl Overview) {
+    println!("Overv”ffiew {}", item.overview());
+    println!("Overview {}", item1.overview());
+}
+fn call_overviewTT<T:Overview>(item:&T, item1:&T) {
+    println!("Overview {}", item.overview());
+    println!("Overview {}", item1.overview());
+}
+//多绑定
+fn call_mul_bind(item:&(impl Overview + Another)) {
+    println!("overvew {}", item.overview());
+    item.hell();
+}
+fn call_mul_bind_generic<T:Overview + Another>(item:&T) {
+    println!("overview {}", item.overview());
+    item.hell();
+}
+fn call_mul_bind_generic_t<T>(item:&T) 
+where
+    T: Overview + Another
+{
+    println!("overview {}", item.overview());
+    item.hell();
+}
+fn test_trait_object_and_generic() {
+    let c1 = Course {
+        headline: "ff".to_owned(),
+        author:"yy".to_owned()
+    };
+    call_overview(&c1);
+    call_overview_generic(&c1);
 
+    let c2 = AnotherCourse {
+        headline: "ff".to_owned(),
+        author:"yz".to_owned()
+    };
+    call_overviewT(&c1, &c2);
+    //call_overviewTT(&c1, &c2); //不可用，因为c1, c2的类型不一样
+    println!("------------------");
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    //多个特质
+    call_mul_bind(&c1);
+    //call_mul_bind(&c2); //error, Another struct没有实现Another特质
+    call_mul_bind_generic(&c1);
+    call_mul_bind_generic_t(&c1);
 }
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Hello, world!");
@@ -1061,7 +1083,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     //边界
     //trait alias
     //test_trait();
-    test_trait_object_and_box();
+    //test_trait_object_and_box();
+    //test_trait_object_and_generic();
         
 
     Ok(())
