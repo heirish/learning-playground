@@ -1,4 +1,5 @@
 use core::num;
+use std::collections::VecDeque;
 use std::{fmt::Error, result};
 use std::num::ParseIntError;
 static MY_STATIC:i32 =42;
@@ -1038,6 +1039,156 @@ fn test_trait_object_and_generic() {
     call_mul_bind_generic(&c1);
     call_mul_bind_generic_t(&c1);
 }
+
+use std::ops::Add;
+#[derive(Debug)]
+struct PointT<T>{
+    x:T,
+    y:T
+}
+//T类型,它可以执行相加的操作
+impl<T> Add for PointT<T> 
+where
+    T:Add<Output=T>, //指定T类型实现了Add trait,并且返回类型Output为T
+{
+    type Output = Self;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        PointT{
+            x:self.x + rhs.x,
+            y:self.y + rhs.y
+        }
+    }
+}
+fn test_overload_operator()
+{
+    let i1 = PointT{x:0, y:1};
+    let i2 = PointT{x:2, y:3};
+    println!("{:?}", i1 + i2);
+}
+ 
+struct Car;
+struct SUV;
+trait Drive {
+    fn drive(&self);
+}
+impl Drive for Car {
+    fn drive(&self) {
+        println!("driving Car");
+    }
+}
+impl Drive for SUV {
+    fn drive(&self) {
+        println!("driving SUV");
+    }
+}
+//fn road(vehicle:& dyn Drive) {
+fn road(vehicle:& impl Drive) {
+    vehicle.drive();
+}
+//继承思想:通过层级性trait来实现
+//单向trait
+trait Queue {
+    fn len(&self) -> usize;
+    fn push_back(&mut self, n:i32);
+    fn pop_front(&mut self) -> Option<i32>;
+}
+//双向trait
+trait Dequeue:Queue {
+    fn push_front(&mut self, n:i32);
+    fn pop_back(&mut self) -> Option<i32>;
+}
+#[derive(Debug)]
+struct List {
+    data:VecDeque<i32>,
+}
+impl Dequeue for List {
+    fn push_front(&mut self, n:i32) {
+        self.data.push_front(n);
+    }
+
+    fn pop_back(&mut self) -> Option<i32> {
+        self.data.pop_back()
+    }
+}
+impl Queue for List {
+    fn len(&self) -> usize {
+        self.data.len()
+    }
+
+    fn push_back(&mut self, n:i32) {
+        self.data.push_back(n);
+    }
+
+    fn pop_front(&mut self) -> Option<i32> {
+        self.data.pop_front()
+    }
+}
+impl List {
+    fn new() -> Self {
+        Self {
+            data:VecDeque::new()
+        }
+    } 
+}
+//Rust并不支持传统的继承概念，但是你可以在特质中通过层级化来完成你的需求
+//Rust选择了一种函数式编程范式，即"组合和委托"而非继承
+//编程语言的大势也是组合优于继承。
+fn test_trait_poli_derive() {
+    road(&Car); 
+    road(&SUV); 
+
+    let mut l = List::new();
+    l.push_back(1);
+    l.push_front(0);
+    println!("{:?}", l);
+    l.push_front(2);    
+    println!("{:?}", l);
+    l.push_back(3);    
+    println!("{:?}", l);
+    println!("{}", l.pop_back().unwrap());
+    println!("{:?}", l);
+    println!("{}", l.pop_front().unwrap());
+    println!("{:?}", l);
+}
+
+#[derive(Debug, Clone, PartialEq)]
+enum Race {
+    White,
+    Yellow,
+    Black
+}
+#[derive(Debug, Clone)]
+struct User {
+    id:u32,
+    name:String,
+    race:Race
+}
+impl PartialEq for User {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id && self.name == other.name && self.race == other.race
+    }
+}
+//常见trait:Clone, Copy, Debug, PartialEq
+fn test_traits() {
+    let user = User {
+        id:3,
+        name:"Join".to_owned(),
+        race:Race::Yellow
+    };
+    println!("{:?}", user); //Debug trait
+    let user2 = user.clone(); //Clone trait
+    //let user2 = user; //Copy trait, 这里需要将String注掉，因为String没有实现Copy
+    println!("{:?}", user2);
+
+    let user3 = User {
+        id:3,
+        name:"Join".to_owned(),
+        race:Race::White
+    };
+    println!("user == user2 ? {}", user == user2);
+    println!("user == user3 ? {}", user == user3);
+}
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Hello, world!");
     //const_static_test();
@@ -1085,6 +1236,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     //test_trait();
     //test_trait_object_and_box();
     //test_trait_object_and_generic();
+    //test_overload_operator();
+    //test_trait_poli_derive();
+    //常见trait
+    test_traits();
         
 
     Ok(())
