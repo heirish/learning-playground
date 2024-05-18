@@ -1189,6 +1189,282 @@ fn test_traits() {
     println!("user == user2 ? {}", user == user2);
     println!("user == user3 ? {}", user == user3);
 }
+
+fn sum_with_loop(arr:&[i32]) -> i32{
+    let mut sum = 0;
+    for &item in arr {
+        sum += item;
+    }
+    sum
+}
+fn sum_with_iter(arr:&[i32])->i32 {
+    arr.iter().sum()
+}
+fn test_iterator() {
+    const ARRAY_SIZE:usize = 1_000;
+    let array:Vec<i32> = (1..=ARRAY_SIZE as i32).collect();
+    let sum = sum_with_loop(&array);
+    println!("sum_with_loop {}", sum);
+    let sum2 = sum_with_iter(&array);
+    println!("sum_with_iter {}", sum2);
+}
+
+fn test_intoiter_iter() {
+    //IntoIterator:a trait,定义了一种将类型转换为迭代器的能力。往往会所有权转移
+    //Iterator: a trait,定义了一种访问序列元素的方式。它包含了一系列方法，如next,map,filter,sum等
+    //vec
+    let v = vec![1,2,3,4,5];//vec实现了IntoInterator trait
+    //转换为迭代器
+    let iter = v.into_iter(); //move所有权转移
+    let sum:i32 = iter.sum();
+    println!("sum {}",sum);
+    //println!("{:?}", v); //error:borrow of moved value.
+    //array
+    let array = [1,2,3,4,5];
+    let iter:std::slice::Iter<'_,i32> = array.iter(); //没有所有权转移，后面array依然可用
+    let sum:i32 = iter.sum();
+    println!("sum {}", sum);
+    println!("{:?}", array); 
+    //chars 
+    let text = "hello,world";
+    let iter = text.chars(); //没有所有权转移，后面text依然可用
+    let upper = iter.map(|c| c.to_ascii_uppercase()).collect::<String>();
+    println!("upper: {}", upper);
+    println!("{:?}", text); 
+}
+
+fn test_get_iter() {
+    //iter不可变
+    //iter_mut可变引用，性能差
+    //into_iter,所有权转移, 该方法适合于你希望在迭代过程中拥有集合的所有权，以便进行消耗性的操作，如移除元素。
+    let vec = vec![1,2,3,4,5];
+    //iter()
+    for &item in vec.iter() {
+        println!("{}", item);
+    }
+    println!("{:?}", vec);
+    //iter_mut可变引用,尽量不要用。
+    let mut vec = vec![1,2,3,4,5];
+    for item in vec.iter_mut() {
+        *item *= 2;
+    }
+    println!("{:?}", vec);
+    //into_iter,所有权转移，尽量在代码中写into_iter
+    let vec = vec![1,2,3,4,5];
+    for item in vec.into_iter() {
+        println!("{}", item);
+    }
+    //println!("{:?}", vec); //error:borrow of moved value
+}
+
+#[derive(Debug)]
+struct Stack<T>{
+    data:Vec<T>,
+}
+impl<T> Stack<T> {
+    fn new() -> Self {
+        Stack { data: Vec::new() }
+    }
+
+    fn push(&mut self, item:T) {
+        self.data.push(item);
+    }
+
+    fn pop(&mut self) -> Option<T> {
+        self.data.pop()
+    }
+
+    //不可变引用
+    fn iter(&self) -> std::slice::Iter<T> {
+        self.data.iter()
+
+    }
+
+    //可变引用
+    fn iter_mut(&mut self) -> std::slice::IterMut<T> {
+        self.data.iter_mut()
+    } 
+
+    //move
+    fn into_iter(self) -> std::vec::IntoIter<T> {
+        self.data.into_iter()
+    }
+}
+fn test_selfdef_iter() {
+    let mut my_statck = Stack::new();
+    my_statck.push(1);
+    my_statck.push(2);
+    my_statck.push(3);
+    for item in my_statck.iter() {
+        println!("{}", item);
+    }
+    println!("{:?}", my_statck);
+
+    for item in my_statck.iter_mut() {
+        *item *= 2;
+    }
+    println!("{:?}", my_statck);
+
+    for item in my_statck.into_iter() {
+        println!("{}", item);
+    }
+    //println!("{:?}", my_statck); //error, already moved.
+}
+
+#[derive(Debug)]
+struct UserS{
+    name:String,
+    score:u64
+}
+fn sort_by_key(users:&mut Vec<UserS>) {
+    users.sort_by_key(sort_helper)
+}
+fn sort_helper(u:&UserS) -> u64 {
+    u.score
+}
+//better
+fn sort_score_closures(users:&mut Vec<UserS>) {
+    users.sort_by_key(|u| u.score);
+}
+fn test_closure() {
+    let a = UserS{name:"U1".to_owned(), score:100};
+    let a1 = UserS{name:"U2".to_owned(), score:40};
+    let a2 = UserS{name:"U3".to_owned(), score:80};
+    let a3 = UserS{name:"U4".to_owned(), score:1};
+    let a4 = UserS{name:"U5".to_owned(), score:90};
+    let mut users = vec![a, a1, a2, a3, a4];
+    //sort_by_key(&mut users);
+    sort_score_closures(&mut users);
+    println!("{:?}", users);
+}
+
+//由编译器决定用哪种方式获取外部参数
+//不可变引用Fn
+//可变引用FnMut
+//转移所有权(Move)FnOnce
+//move关键字强制将所有权转移到闭包
+fn test_closure_getparam(){
+    //Fn:不可变引用获取外部参数
+    let s1 = String::from("111111111111111111111111111");
+    let s2 = String::from("222222222222222222222222222");
+    let fn_func  = |s| {
+        println!("{}", s1);
+        println!("{}", s);
+    };
+    fn_func("yz".to_owned());
+    fn_func("xy".to_owned());
+    println!("{s1}");
+    println!("{s2}");
+
+    //FnMut:可变引用获取外部参数, 如果在闭包内修改了外部参数的值，fn_func会被自动推导为FnMut
+    let mut s1 = String::from("111111111111111111111111111");
+    let mut s2 = String::from("222222222222222222222222222");
+    let mut fn_func  = |s| {
+        s1.push_str("abc");
+        s2.push_str("aw");
+        println!("{}", s1);
+        println!("{}", s);
+    };
+    fn_func("yz".to_owned());
+    fn_func("xy".to_owned());
+    println!("{s1}");
+    println!("{s2}");
+
+    //FnOnce:所有权转移,由编译器根据我们的代码来判断
+    let s1 = String::from("1111");
+    let fn_once_func = || {
+        println!("{s1}");
+        std::mem::drop(s1);
+    };
+    fn_once_func(); //只能调用一次
+    //println!("{s1}"); //error: borrow of moved value
+    //fn_once_func(); //error:use of moved value
+
+
+    //强制move,move_fn被推导成了Fn，因为Fn:FnMut:FnOnce具有层级关系
+    let s1 = "1111".to_string();
+    let move_fn = move || {
+        println!("{s1}");
+    };
+    move_fn();
+    //println!("{s1}"); //error: borrow of moved value
+
+    //强制move在线程中用得比较多
+    let s1 = "11111".to_string();
+    std::thread::spawn(move || {
+        println!("{s1}");
+    });
+}
+
+fn apply_closure<F:Fn(i32, i32) -> i32>(closure:F, x:i32, y:i32) -> i32{
+    closure(x, y)
+}
+fn test_how_closure_work() {
+    //编译器将闭包放入一个结构体
+    //结构体会声明一个call function,而闭包就是函数，call function会包含闭包的所有代码
+    //结构体会生产一些属性去捕获闭包外的参数。
+    //结构体会实现一些特质, FnOnce, FnMut, Fn
+    let x = 5;
+    let add_closure = |a,b| {
+        println!("x is :{}", x);
+        a + b + x
+    };
+    let result = apply_closure(add_closure, 5, 6);
+    println!("result {}", result);
+}
+
+fn closure_Fn<F> (func:F) 
+where
+    F:Fn() 
+{
+    func();
+    func();
+}
+fn closure_fn_mut<F>(mut func:F) 
+where
+    F:FnMut()
+{
+    func();
+    func();
+}
+//FnOnce中并不一定会进行move, 只是声明它有这种能力，并不定会用
+fn closure_fn_once<F>(func:F)
+where
+    F:FnOnce()
+{
+    func();
+}
+fn test_Fns() {
+    //不可变引用只能传一种, Fn
+    let s1 = String::from("1111111");
+    closure_Fn(||println!("{}", s1));
+
+
+    //可变引用可以接受Fn与FnMut
+    let s1 = String::from("1111111");
+    closure_fn_mut(||println!("{}", s1)); //Fn
+    let mut s2 = "2222".to_string();
+    closure_fn_mut(|| {          //FnMut
+        s2.push_str("smile");
+        println!("{}", s2);
+    });
+
+    //可接受Fn, FnMut, FnOnce
+    let s1 = String::from("1111111");
+    closure_fn_once(||println!("{}", s1)); //Fn
+    let mut s2 = "2222".to_string();
+    closure_fn_once(|| {          //FnMut
+        s2.push_str("smile");
+        println!("{}", s2);
+    });
+    let s3 = "333".to_string();
+    closure_fn_once(||{ //FnOnce
+        println!("{}", s3);
+        std::mem::drop(s3);
+    });
+    let s3 = "333".to_string();
+    closure_fn_once(move ||  println!("{}", s3));//FnOnce
+}
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Hello, world!");
     //const_static_test();
@@ -1239,9 +1515,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     //test_overload_operator();
     //test_trait_poli_derive();
     //常见trait
-    test_traits();
-        
+    //test_traits();
 
+    //iterator
+    //test_iterator();    
+    //test_intoiter_iter();
+    //test_get_iter();
+    //test_selfdef_iter();    
+
+    //Closures闭包
+    //闭包是一种可以捕获其环境中变量的匿名函数
+    //test_closure();
+    //test_closure_getparam();
+    //test_how_closure_work();
+    test_Fns();
     Ok(())
 }
 
