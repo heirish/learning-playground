@@ -196,6 +196,7 @@ void test_weak_ptr()
 }
 
 int main() {
+    //https://www.bilibili.com/video/BV18B4y187uL/?spm_id_from=333.999.0.0&vd_source=601dbc960255506eb5f6390166996d67
     //std::unique_ptr, std::shared_ptr, stdk::weak_ptr
     //并不是所有指针都可以封装成智能指针，很多时原始指针要更方便
     //各种指针中，最常用的是raw pointer,其次是unique_ptr和shared_ptr

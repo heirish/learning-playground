@@ -114,6 +114,7 @@ void test_typeid()
 }
 
 int main() {
+    //https://www.bilibili.com/video/BV15v4y1M7fF/?spm_id_from=333.999.0.0&vd_source=601dbc960255506eb5f6390166996d67
     //静态绑定的不足
     //test_static_bind();
     //test_dynamic_bind();
