@@ -14,6 +14,7 @@ class MyVector final {
                     _arr[i] = init_value;
                 }
             }
+            std::cout << "MyVector()" << std::endl;            
         }
         MyVector(const MyVector& rhs) { //copy constructor
             std::cout << "copy constructor" << std::endl;            
@@ -60,5 +61,6 @@ class MyVector final {
 void foo(MyVector v);
 MyVector createMyVector();
 void do_move_semantic_test();
+void do_perfect_forwarding_test();
 }
 #endif //RVALUEF_DEMO

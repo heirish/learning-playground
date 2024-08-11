@@ -81,8 +81,27 @@
 - 函数式编程范式
 ### Rvalue Reference
 - https://www.youtube.com/watch?v=UTUdhjzws5g&t=4s&ab_channel=BoQian
+- https://www.youtube.com/watch?v=0xcCNnWEMgs
 - lvalue, rvalue
   - lvalue:An object that occupies some identifiable location in memory
-  - Any object that is not a lvalue
+  - rvalue:Any object that is not a lvalue
 - moving semantics
-- perfect forwarding
+- perfect forwarding:rvalue is forwarded as rvalue, lvalue is forwarded as lvalue.
+- Reference Collapsing Rules(c++11)
+  - T& & => T&
+  - T& && => T&
+  - T&& & => T&
+  - T&& && => T&&
+- template <typename T> struct remove_reference;   
+  - it removes reference on type T
+  - remove_reference<int&>::type i;  //int i
+  - remove_reference<int>::type i: //int i;
+- T&& is Universal Reference: rvalue, lvalue, const, non-const, etc.
+  when 
+  - T is a template type
+  - Type deduction(reference collasping) happens to T
+     - T is a function template type, not class template type.
+  - int&& => rvalue, T&& => universal reference.
+- std::move vs std::forward
+  - std::move<T>(arg); //Turn arg into rvalue type
+  - std::forward<T>(arg); //Turn arg to type of T&&

@@ -57,6 +57,8 @@ int main(int argc, char const *argv[])
     //ENUM_CLASS_DEMO::do_enum_demo_test();
     //constexpr_test();
     
-    RVALUE_DEMO::do_move_semantic_test();
+    //RVALUE
+    //RVALUE_DEMO::do_move_semantic_test();
+    RVALUE_DEMO::do_perfect_forwarding_test();
     return 0;
 }
