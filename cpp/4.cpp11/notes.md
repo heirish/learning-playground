@@ -120,61 +120,63 @@
   - std::move<T>(arg); //Turn arg into rvalue type
   - std::forward<T>(arg); //Turn arg to type of T&&
 
-- Compiler Generated Functions
-  - C++03
-     ```
-     1.default constructor(generated only if no constructor is declared by user)
-     2.copy constructor(generated only if no 5,6 declared by user)(c++11: 3,4,5,6)
-     3.copy assignment operator(generated only if no 5,6 declared by user) (c++11: 2,4,5,6)
-     4.destructor
-     ```
-  - C++11
-    ```
-     5.move constructor(generated only if 2,3,4,6 not declared by user)
-     6.move assignment operator(generated only if 2,3,4,5 not declared by user)
-    ```
-  - class Dog{}; is equivalent to something like below
-    ```
-    class Dog {
-      //c++03
-      Dog();
-      Dog(const Dog&);
-      Dog& operator=(const Dog&);
-      ~Dog();
+### Compiler Generated Functions
+- C++03
+   ```
+   1.default constructor(generated only if no constructor is declared by user)
+   2.copy constructor(generated only if no 5,6 declared by user)(c++11: 3,4,5,6)
+   3.copy assignment operator(generated only if no 5,6 declared by user) (c++11: 2,4,5,6)
+   4.destructor
+   ```
+- C++11
+  ```
+   5.move constructor(generated only if 2,3,4,6 not declared by user)
+   6.move assignment operator(generated only if 2,3,4,5 not declared by user)
+  ```
+- class Dog{}; is equivalent to something like below
+  ```
+  class Dog {
+    //c++03
+    Dog();
+    Dog(const Dog&);
+    Dog& operator=(const Dog&);
+    ~Dog();
 
-      //c++11
-      Dog(Dog&&);
-      Dog& operator=(Dog&&);
-    };
-    ```
-  - Test
-    ```
-    class Cat {//3,4 will be generated (3 is deprecated)
-      Cat(const Cat&){} //copy constructor
-    };
-    class Duck { //4
-      Duck(Duck&&) {} //move constructor
-    };
-    class Frog { //4
-      Frog(Frog&&, int=0) {} //move constructor
-      Frog(int=0){} //default constructor
-      Frog(const Frog&, int=0) {} //copy constructor
-    };
-    class Fish{ //1,2,3(c++11:2,3 are deprecated)
-      ~Fish(){}
-    };
-    class Cow { //1,2,4 (c++11: 2 is deprecated)
-      Cow& operator=(const Cow&) = delete;  //delete statement is still counted as delcared by user
-    };
-    ```
-- smart_ptr
-  - An object should be assigned to a smart pointer as soon as it is created,  Raw pointer should not be used again. `std::make_shared, std::make_unique`
-  - shared_ptr:std::make_shared
-  - weak_ptr:resolve cyclic reference.
-    - weak_ptr has no ownershipo of the pointed object.
-    - I only want to access that object, when and how that object will be delete is none of my business.
-    - weak_pointer is similar to raw pointer, but it also provide one level protection that object an not be deleted through weak_ptr
-    - weak_pointer also provide safe access to the pointer.weak_ptr is not always valid,
-     before you use it, you need to call .lock() to create a shared_ptr from it.
-  - unique_ptr: exclusive ownership, light weighted smart pointer
-    - unique_ptr.release() give up the ownership, while shared_ptr.get() doesn't give up the ownership
+    //c++11
+    Dog(Dog&&);
+    Dog& operator=(Dog&&);
+  };
+  ```
+- Test
+  ```
+  class Cat {//3,4 will be generated (3 is deprecated)
+    Cat(const Cat&){} //copy constructor
+  };
+  class Duck { //4
+    Duck(Duck&&) {} //move constructor
+  };
+  class Frog { //4
+    Frog(Frog&&, int=0) {} //move constructor
+    Frog(int=0){} //default constructor
+    Frog(const Frog&, int=0) {} //copy constructor
+  };
+  class Fish{ //1,2,3(c++11:2,3 are deprecated)
+    ~Fish(){}
+  };
+  class Cow { //1,2,4 (c++11: 2 is deprecated)
+    Cow& operator=(const Cow&) = delete;  //delete statement is still counted as delcared by user
+  };
+  ```
+### smart_ptr
+- An object should be assigned to a smart pointer as soon as it is created,  Raw pointer should not be used again. `std::make_shared, std::make_unique`
+- shared_ptr:std::make_shared
+- weak_ptr:resolve cyclic reference.
+  - weak_ptr has no ownershipo of the pointed object.
+  - I only want to access that object, when and how that object will be delete is none of my business.
+  - weak_pointer is similar to raw pointer, but it also provide one level protection that object an not be deleted through weak_ptr
+  - weak_pointer also provide safe access to the pointer.weak_ptr is not always valid,
+   before you use it, you need to call .lock() to create a shared_ptr from it.
+- unique_ptr: exclusive ownership, light weighted smart pointer
+  - unique_ptr.release() give up the ownership, while shared_ptr.get() doesn't give up the ownership
+
+### Regex
