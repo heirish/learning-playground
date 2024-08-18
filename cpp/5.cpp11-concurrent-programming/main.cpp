@@ -1,6 +1,8 @@
 #include <thread>
 #include <iostream> 
 #include "LazyInit.hpp"
+#include "FPA.hpp"
+#include "CallableTest.hpp"
 
 void function_1() {
     std::cout << "Beauty is only skin-deep" << std::endl;
@@ -54,6 +56,8 @@ int main(int argc, char const *argv[])
     //join_with_without_exc();
     //thread_parameter_test();
     
-    LAZY_INIT::test_lazy_intialization();
+    //LAZY_INIT::test_lazy_intialization();
+    //FPA::get_result_from_thread_test();
+    CALLABLE_TEST::do_callable_test();
     return 0;
 }

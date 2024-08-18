@@ -8,7 +8,7 @@
 			"args": [
 				"-fdiagnostics-color=always",
 				"-g",
-				"-std=c++11",
+				"-std=c++14",
 				"${workspaceFolder}\\*.cpp",
 				"-o",
 				"${workspaceFolder}\\main.exe"
@@ -33,7 +33,7 @@
 				"-fcolor-diagnostics",
 				"-fansi-escape-codes",
 				"-g",
-				"-std=c++11",
+				"-std=c++14",
 				"${workspaceFolder}\\*.cpp",
 				"-o",
 				"${workspaceFolder}\\main.exe",
