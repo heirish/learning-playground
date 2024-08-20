@@ -24,6 +24,8 @@
 - std::call_once(once_flag, callable, params);
 ### packaged_task
 - package of task that can be transported to different place in the program and be executed over there.
+- packaged_task是一个function object, 本身并不创建线程 
+- 但packaged_task比function object的优点是，提供future,这样就能在多线程环境获取结果
 - summary: 3 ways to get a future
   - pomise::get_future()
   - packaged_task::get_future()
