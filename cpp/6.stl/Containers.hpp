@@ -13,7 +13,7 @@
 #include <algorithm>
 #include <typeinfo>
 
-namespace BASIC_STL{
+namespace BASIC_STL_CONTAINERS{
 //one direction grow: at the end of the vector
 void vector_test() {
     std::vector<int> vec{4,1,8};
