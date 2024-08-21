@@ -8,6 +8,8 @@
 #include <array>
 #include <set>
 #include <map>
+#include <unordered_set>
+#include <unordered_map>
 #include <algorithm>
 #include <typeinfo>
 
@@ -143,6 +145,68 @@ void map_test() {
     for(it = mymap.begin(); it != mymap.end(); it++) {
         std::cout << it->first << "=>" << it->second << std::endl;
     }
+}
+
+//unordered multiset:unordered set that allows duplicated elements
+//unordered map: unordered set of pairs
+//unordered multimap: unordered map that allows duplicated keys 
+//hash collision => performance degrade
+void unordered_test() {
+    std::unordered_set<std::string> myset{"red", "green", "blue"};
+    std::unordered_set<std::string>::const_iterator it = myset.find("green"); //O(1)
+    if (it != myset.end()) {
+        std::cout << *it << std::endl;
+    }
+    myset.insert("yellow");
+
+    std::vector<std::string> vec{"purple", "pink"};
+    myset.insert(vec.begin(), vec.end());
+
+    //hashtable specific APIS
+    std::cout << "load_factor=" << myset.load_factor() << std::endl;
+    std::string x = "red";
+    std::cout << x << " is in bucket #" << myset.bucket(x) << std::endl;
+    std::cout << "Total buckets #" << myset.bucket_count() << std::endl;
+
+    
+}
+
+//Associative array
+//1.Search time: unordered_map:O(1), map:O(logn)
+//2.Unordered_map may degrade to O(n)
+//3.Can't use multimap and unordered_multimap, they don't have [] operator
+void unordered_test1() {
+    //Associative array
+    //map and unordered_map
+    std::unordered_map<char, std::string> day = {
+        {'S', "Sunday"},
+        {'M', "Monday"},
+    };
+    std::cout << day['S'] << std::endl;
+    std::cout << day.at('S') << std::endl;
+    
+    std::vector<int> vec1{1,2,3};
+    //vec1[5] = 5; //range check, compiler errror
+    day['W'] = "Wednesday"; //insert 
+    day.insert(std::make_pair('F', "Friday")); //insert
+
+    std::pair<std::unordered_map<char, std::string>::iterator, bool> ret = day.insert(std::make_pair('M', "MONDAY")); //Fail to modify, it's an unordered_map,can not change pair key
+    if (!ret.second) {
+        std::cout << "pair with key " << ret.first->first <<  " already exist, value:" << ret.first->second << std::endl;
+    }
+    day['M'] = "MONDAY"; //succeed to modify value
+    
+
+    //consequence of [] operator provide write access
+    //need to write more code for printing
+    auto foo = [](const std::unordered_map<char, std::string>& m){
+        //std::cout << m['S'] << std::endl; //will not compile. because [] provide write access to unordered_map
+        auto iter = m.find('S');
+        if (iter != m.end()) {
+            std::cout << "found " << iter->first << "=>" << iter->second << std::endl;
+        }
+    };
+    foo(day);
 }
 
 }

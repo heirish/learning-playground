@@ -13,5 +13,8 @@ int main(int argc, char const *argv[])
     //associate containers
     BASIC_STL::set_test();
     BASIC_STL::map_test();
+    BASIC_STL::unordered_test();
+    BASIC_STL::unordered_test1();
+
     return 0;
 }
