@@ -3,6 +3,7 @@ https://www.youtube.com/watch?v=ltBdTiRgSaw&t=24s
 ### Containers
 - Sequence containers(array and linked list): vector, deque, list, forward list, array
   - don't have find() member function(use algorithm std::find)
+  - list: 很高效的切片插入 mylist1.splice(iter, mylist2, iter_a, iter_b) //O(1)
 - Associate Containers(binary tree): set, multiset, map, multimap
   - always sorted, default criteria is <
   - no push_back(), push_front()
@@ -48,6 +49,18 @@ https://www.youtube.com/watch?v=ltBdTiRgSaw&t=24s
     > ++iter
   - Unordered containers provide "at least" forward iterators.
   - Input iterator:read and process value while iterating forward, read
-   > int x= *iter 
+    > int x= *iter 
   - Output iterator:output values while iterating forward, write
-   > *itr = 100;
+    > *itr = 100;
+  - Every container has an iterator and a const_iterator
+  - Iterator Functions: advance(iter, 5), distance(iter1, iter2) 
+  - Iterator Adaptor (predefined iterator): A special, more powerful iterator
+    - Insert iterator
+    - Stream iterator
+    - Reverse iterator
+    - Move iterator(c++11)
+- Algorithms: mostly loops
+   - if there's for loop or while loop in your code, you should seriously consider replacing them with a function all from algorithm, make your code more efficient, less buggy, more readable, more clean
+   - algorithm always process ranges in a half-open way: [begin, end)
+   - std::copy, ensure there's enough space pre-allocated in destination iter.
+   - algorithm with function: `std::find_if`
