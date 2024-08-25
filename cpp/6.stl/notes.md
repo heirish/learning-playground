@@ -64,3 +64,43 @@ https://www.youtube.com/watch?v=ltBdTiRgSaw&t=24s
    - algorithm always process ranges in a half-open way: [begin, end)
    - std::copy, ensure there's enough space pre-allocated in destination iter.
    - algorithm with function: `std::find_if`
+### Functors
+- Functor expands the concept of function by saying anything behave like a function is a function.
+- 不要与type conversion function混淆了
+  ```
+  void operator() (String str);//functor
+  operator string(); //type conversion function
+  ```
+- Function Objets
+- Benefits of functor:
+  - Smart function: capabilities beyond operator(), It can remember state(member variable).
+  - It can have its own type.
+     - regular functions can only be defferenciated by their function signature, if two functions have the same function signatures, they have the same type.but two functors can be of different type event if they have the exact same functions signature.
+- Build-in Functors
+  - less, greater, greater_equal, less_equal, not_equal_to, logical_and, logical_not, logical_or, mutiplies, minus, plus, devide, modulus, negate
+- Parameter Binder: std::bind
+- convert regular function to a functor: std::function<>
+- why do we need functor in STL？
+  - without functor, associative containers will not work.
+  `std::set<int>` is equivalent to `std::vect<int, std::less<int>>`, but what if we want to create a different set sorted in a differetn order?比如我想创建一个按最低位数字排序的set?
+    ```
+    bool lsb_less(int a, int b) {
+      return (x%10) < (y%10);
+    }
+    class Lsb_less {
+    public:
+      bool operator()(int a, int b) {
+        return (x%10) < (y%10);
+      }
+    };
+    void test() {
+      //will not compile, STL need a functor type instead of function
+      //std::set<int, lsb_less> myset;
+      std::set<int, Lsb_less> myset;
+    }
+
+    ```
+  - Predicate functor: A functor or function that returns a boolean, does not modify data
+    predicate is used for comparison or condition check.
+    widely used in STL algorithm
+    - 注：在有些algorithm中，针对同一个element, predicate可能不止被调用一次, 因此predicate最后是状态无关的

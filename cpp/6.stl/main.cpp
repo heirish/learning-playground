@@ -2,6 +2,8 @@
 #include "Containers.hpp"
 #include "Iterators.hpp"
 #include "Algorithms.hpp"
+#include "Functors.hpp"
+#include "AlgorithmsWT.hpp"
 
 int main(int argc, char const *argv[])
 {
@@ -27,6 +29,18 @@ int main(int argc, char const *argv[])
     //BASIC_STL_ITERATORS::reverse_iterator_test();
     //BASIC_STL_ITERATORS::move_iterator_test();
     
-    BASIC_STL_ALGORITHM::basic_test();
+    //BASIC_STL_ALGORITHM::basic_test();
+
+    //BASIC_STL_FUNCTORS::do_test();
+    //BASIC_STL_FUNCTORS::build_in_functors_test();
+    //BASIC_STL_FUNCTORS::parameter_binding_test();
+    //BASIC_STL_FUNCTORS::convert_function_to_functor_test();
+    //BASIC_STL_FUNCTORS::fancy_complex_usage();
+    
+
+    //algorithms walkthrough
+    //ALGORITHM_TEST::none_modifying_algs_test();
+    //ALGORITHM_TEST::modifying_algs_test();
+    ALGORITHM_TEST::modifying_order_changing_algs_test();
     return 0;
 }
