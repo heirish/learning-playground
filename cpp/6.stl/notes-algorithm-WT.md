@@ -13,3 +13,14 @@ count, min, max, compare, linear search, attribute
 ### Sorting Algorithms
 - Sorting algorithm **requires random access iterators**: vector, deque, container array, native array
 - list can NOT use this algorithm, but it has a .sort() member function  
+- Heap Algorithms
+  - First element is always the largest
+  - Add/remove takes O(logn) time
+
+### sorted data algorithms and Numeric algorithms
+- Sorted data algorithms: algorithms that require data being pre-sorted.
+  - binary search, merge, set operations,
+  - every sorted data algorithm has a generialized form with a same name
+- numeric algorithms 
+  - defined in header `<numeric>`
+  - accumulate, inner product, partial sum, adjacent difference

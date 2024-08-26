@@ -41,6 +41,9 @@ int main(int argc, char const *argv[])
     //algorithms walkthrough
     //ALGORITHM_TEST::none_modifying_algs_test();
     //ALGORITHM_TEST::modifying_algs_test();
-    ALGORITHM_TEST::modifying_order_changing_algs_test();
+    //ALGORITHM_TEST::modifying_order_changing_algs_test();
+    //ALGORITHM_TEST::sorting_algs_test();
+    //ALGORITHM_TEST::sorted_data_algs_test();
+    ALGORITHM_TEST::numeric_algs_test();
     return 0;
 }
