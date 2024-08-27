@@ -24,3 +24,5 @@ count, min, max, compare, linear search, attribute
 - numeric algorithms 
   - defined in header `<numeric>`
   - accumulate, inner product, partial sum, adjacent difference
+
+### String

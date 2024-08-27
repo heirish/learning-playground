@@ -4,6 +4,7 @@
 #include "Algorithms.hpp"
 #include "Functors.hpp"
 #include "AlgorithmsWT.hpp"
+#include "StringTest.hpp"
 
 int main(int argc, char const *argv[])
 {
@@ -44,6 +45,9 @@ int main(int argc, char const *argv[])
     //ALGORITHM_TEST::modifying_order_changing_algs_test();
     //ALGORITHM_TEST::sorting_algs_test();
     //ALGORITHM_TEST::sorted_data_algs_test();
-    ALGORITHM_TEST::numeric_algs_test();
+    //ALGORITHM_TEST::numeric_algs_test();
+    
+    //STRING_TEST::string_ctor_size();
+    STRING_TEST::character_access();
     return 0;
 }
