@@ -64,6 +64,14 @@
         "xmemory": "cpp",
         "xstring": "cpp",
         "xtr1common": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "array": "cpp",
+        "deque": "cpp",
+        "map": "cpp",
+        "numeric": "cpp",
+        "random": "cpp",
+        "set": "cpp",
+        "unordered_set": "cpp",
+        "xtree": "cpp"
     }
 }

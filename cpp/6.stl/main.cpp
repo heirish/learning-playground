@@ -48,6 +48,9 @@ int main(int argc, char const *argv[])
     //ALGORITHM_TEST::numeric_algs_test();
     
     //STRING_TEST::string_ctor_size();
-    STRING_TEST::character_access();
+    //STRING_TEST::character_access();
+    //STRING_TEST::member_fn_algs();
+    //STRING_TEST::non_member_fns();
+    STRING_TEST::string_and_algs();
     return 0;
 }
