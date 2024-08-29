@@ -5,6 +5,7 @@
 #include "Functors.hpp"
 #include "AlgorithmsWT.hpp"
 #include "StringTest.hpp"
+#include "StreamTest.hpp"
 
 int main(int argc, char const *argv[])
 {
@@ -51,6 +52,10 @@ int main(int argc, char const *argv[])
     //STRING_TEST::character_access();
     //STRING_TEST::member_fn_algs();
     //STRING_TEST::non_member_fns();
-    STRING_TEST::string_and_algs();
+    //STRING_TEST::string_and_algs();
+    
+    //STREAM_TEST::iostream_test();
+    //STREAM_TEST::ftream_test();
+    STREAM_TEST::iofromatting_test();
     return 0;
 }

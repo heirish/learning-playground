@@ -104,3 +104,12 @@ https://www.youtube.com/watch?v=ltBdTiRgSaw&t=24s
     predicate is used for comparison or condition check.
     widely used in STL algorithm
     - 注：在有些algorithm中，针对同一个element, predicate可能不止被调用一次, 因此predicate最后是状态无关的
+### Stream: c++ input/output library
+  - what is stream? Serial IO Interface to external devices(file, stdin/stdout, network, etc.)
+  - advantage of stream class
+    ```
+    //IO Operation two steps:
+    //1.formatting the data, stream class provides a common api to format the data
+    //2.communicating the data with external devices(iostream -->stdin/stdout, fstream--->file)
+    //Software Engineer Principle: low coupling -> reusability
+    ```
