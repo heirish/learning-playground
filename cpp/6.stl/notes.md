@@ -110,6 +110,25 @@ https://www.youtube.com/watch?v=ltBdTiRgSaw&t=24s
     ```
     //IO Operation two steps:
     //1.formatting the data, stream class provides a common api to format the data
-    //2.communicating the data with external devices(iostream -->stdin/stdout, fstream--->file)
+    //2.communicating the data with external devices
     //Software Engineer Principle: low coupling -> reusability
+    ```
+  - std::endl实际上是一个function, 这种操作stream的函数叫manipulators, std还定义了ends,flush,...等其它manipulators,有些需要引入头文件`<iomanip>`
+    ```
+    std::ostream& endl(std::ostream& os) {
+      os.put('\n');
+      os.flush();
+      return os;
+    }
+
+    <<实际是一个有不同参数的操作符重载，针对<<endl.以下重载工作
+    std::ostream& operator<<(std::ostream& (*func)(std::ostream&)) {
+      return (*func)(*this);
+    } 
+    ```
+  - stream buffer
+    ```
+    IO operations
+    formatting data --> stream class is responsible for this
+    communicating data to external devices --> who is responsible for this?----> done by stream buffer(stream internal module)
     ```

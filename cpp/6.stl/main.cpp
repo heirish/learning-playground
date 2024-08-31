@@ -56,6 +56,8 @@ int main(int argc, char const *argv[])
     
     //STREAM_TEST::iostream_test();
     //STREAM_TEST::ftream_test();
-    STREAM_TEST::iofromatting_test();
+    //STREAM_TEST::iofromatting_test();
+    //STREAM_TEST::manipulators_test();
+    STREAM_TEST::streambuffer_test();
     return 0;
 }
