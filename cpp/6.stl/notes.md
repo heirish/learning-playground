@@ -132,3 +132,6 @@ https://www.youtube.com/watch?v=ltBdTiRgSaw&t=24s
     formatting data --> stream class is responsible for this
     communicating data to external devices --> who is responsible for this?----> done by stream buffer(stream internal module)
     ```
+  - stringstream:stream **WITHOUT** IO operations, it is a stream that does read/write of string
+    - treat a string like a file
+    - popurse: using the formatting capability of stream to process string

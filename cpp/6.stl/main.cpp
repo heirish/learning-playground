@@ -58,6 +58,8 @@ int main(int argc, char const *argv[])
     //STREAM_TEST::ftream_test();
     //STREAM_TEST::iofromatting_test();
     //STREAM_TEST::manipulators_test();
-    STREAM_TEST::streambuffer_test();
+    //STREAM_TEST::streambuffer_test();
+    //STREAM_TEST::stringstream_test();
+    STREAM_TEST::streamenabled_class_test();
     return 0;
 }

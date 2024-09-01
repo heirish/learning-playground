@@ -5,6 +5,7 @@
 #include <bitset>
 #include <complex>
 #include <iomanip>
+#include <sstream>
 
 //advantage of stream class
 //IO Operation two steps:
@@ -193,8 +194,52 @@ void streambuffer_test() {
     //    std::ostreambuf_iterator<char>(std::cout));
     std::copy_if(std::istreambuf_iterator<char>(std::cin), std::istreambuf_iterator<char>(),
         std::ostreambuf_iterator<char>(std::cout), [](char c){return c != 'x';});
-
-
 }
+
+void stringstream_test() {
+    int i = 89;
+    std::stringstream ss;
+    ss << i << " Hex: " << std::hex << i
+        << " Oct: " << std::oct << i; //89 Hex: 59 Oct: 131
+    std::cout << ss.str() << std::endl;
+
+    int a,b,c;
+    std::string s1;
+    ss >> std::hex >> a; //formatting input works token by token. tokens serparated by spaces, tabs, newlines
+    std::cout << a << std::endl; //a == 137
+    ss >> s1; //Hex:
+    ss >> std::dec >> b; //59
+    ss.ignore(6); //ignore the next 6 chars
+    ss >> std::oct >> c; //89
+
+    //ostringstream -- formatted output
+    //istringstream -- formatted input
+}
+
+struct Dog {
+friend std::ostream& operator<<(std::ostream& os, const Dog& d);
+friend std::istream& operator>>(std::istream& is, Dog& d);
+public:
+    Dog(int age, const std::string& name):_age(age), _name(name){}
+private:
+    int _age;
+    std::string _name;
+};
+std::ostream& operator<<(std::ostream& os, const Dog& d) {
+    os << "My name is "<< d._name << " and my age is " << d._age << std::endl;
+    return os;
+}
+std::istream& operator>>(std::istream& is, Dog& d) {
+    is >> d._name;
+    is >> d._age;
+    return is;
+}
+void streamenabled_class_test() {
+    Dog d{2,"Bob"}; //Universal Initialization
+    std::cout << d;
+    std::cin >> d;
+    std::cout << d;
+}
+
 }
 #endif //__STREAM_TEST__
