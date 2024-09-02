@@ -6,6 +6,7 @@
 #include "AlgorithmsWT.hpp"
 #include "StringTest.hpp"
 #include "StreamTest.hpp"
+#include "AdvancedSTL.hpp"
 
 int main(int argc, char const *argv[])
 {
@@ -60,6 +61,8 @@ int main(int argc, char const *argv[])
     //STREAM_TEST::manipulators_test();
     //STREAM_TEST::streambuffer_test();
     //STREAM_TEST::stringstream_test();
-    STREAM_TEST::streamenabled_class_test();
+    //STREAM_TEST::streamenabled_class_test();
+    
+    ADVANCED_STL::performance_compare();
     return 0;
 }

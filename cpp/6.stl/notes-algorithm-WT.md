@@ -7,7 +7,7 @@ count, min, max, compare, linear search, attribute
 - most algorithms have a simple form and a generalized form
   
 ### Modifying Algorithms
-- copy, move, transform, swap, fill, replace, remove:change the element value
+- copy, move, transform, swap, fill, replace, remove, unique:change the element value
 - order-changing algorithm:reverse, rotate, permute, shuffle:they changes the order of elements in container, but not necessarily the elements themselves.
 
 ### Sorting Algorithms
