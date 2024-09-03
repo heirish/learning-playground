@@ -63,6 +63,8 @@ int main(int argc, char const *argv[])
     //STREAM_TEST::stringstream_test();
     //STREAM_TEST::streamenabled_class_test();
     
-    ADVANCED_STL::performance_compare();
+    //ADVANCED_STL::performance_compare();
+    ADVANCED_STL::reverse_iterator_test();
+    ADVANCED_STL::equivalence_vs_equality_test();
     return 0;
 }

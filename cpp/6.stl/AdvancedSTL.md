@@ -25,4 +25,39 @@
 - why? same function exist as member function and algorithm function?
   > same purpose, but they do things in a different way, they're not equal because one way is better than the other
   - there are duplicated functions between container's member functions and algorithm functions
-  - in general, perfer member functions over algorithm functions with the same names.
+  - in general, perfer member functions over algorithm functions with the same names.except
+    - find of std::set, see next section **Equivalence vs Equality**
+### Tricky reverse iterator
+  reverse_iterator and iterator can be converted to each other,
+  but they don't point to the same element, they're off by one item.
+  iter -> riter: (-1), riter -> iter: (+1)
+  ![](images/reverse_iterator.png)
+  ```
+  std::vector<int>::reverse_iterator ritr;
+  std::vector<int>::iterator it;
+
+  riter = std::vector<int>::reverse_iterator(it);
+  it = riter.base();
+  ```
+### Equivalence vs Equality
+  - find in std::set for algorithm and member function
+    - algorithm std::find() looks for equality if (x==y)
+    - std::set::find() looks for equivalence: if (!compare(x,y) && !compare(y,x))
+  - GuideLines:
+    - if the function is using operator "<"(compare) or it's like, it's checking equivalence, typically it's algorithm that works with sorted data, or a member function of a container with sorted data, such as associative container.
+    - if the function is using operator "==" or it's like, it's checking equality, typically the data is not required to be sorted.
+      ```
+      //algorithm of equality
+      std::search
+      std::find_end
+      std::find_first_of
+      std::adjacent_search
+
+      //algorithms of equivalence
+      std::binary_earch
+      std::includes
+      std::lower_bound
+      std::upper_bound
+      ```
+    - Summary: when using a function to search or remove certain element, make sure you understand the difference between equality and equivalence
+### Removing elements
