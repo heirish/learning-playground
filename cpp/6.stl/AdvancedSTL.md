@@ -61,3 +61,9 @@
       ```
     - Summary: when using a function to search or remove certain element, make sure you understand the difference between equality and equivalence
 ### Removing elements
+  - vector or deque: algorithm remove() followed by member function erase()
+  - List: member function remove()
+  - associative container or unordered container:erase()
+  - remove and do something else?
+    - sequence container and unordered container: `iter = c.erase(iter)`
+    - associative container: `iter= c.erase(iter) or c.erase(iter++)`

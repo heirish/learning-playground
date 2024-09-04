@@ -90,5 +90,132 @@ void equivalence_vs_equality_test() {
     //if s is defined as std::set<int>, which will use default std::less compare.
     //then iter1 and iter2 will return the same s.end()
 }
+
+
+template <typename T>
+void print(T t, std::string msg) {
+    std::cout << msg << "{";
+    for(typename T::iterator it = t.begin(); it != t.end(); it++) {
+        std::cout << *it << ", ";
+    }
+    std::cout << "}" << std::endl;
+}
+void remove_elements_test() {
+    //removing elements from vector
+    std::vector<int> c{1,4,6,1,1,1,1,12,18,16};
+    print(c, "Original:");
+    std::cout << "capacity:" << c.capacity() << std::endl;
+
+    //for(std::vector<int>::iterator it = c.begin(); it !=c.end();) {
+    //    if (*it == 1) {
+    //        it = c.erase(it);
+    //    } else {
+    //        it++; 
+    //    }
+    //} //Complexity:O(n*m), elements after the deleted item is copying to the privous for each each erasing
+    //print(c, "After erase():");
+    //better solution
+    std::vector<int>::iterator newend = std::remove(c.begin(), c.end(), 1); //it only move the unremoved items to the front once. complexity: O(n)
+    print(c, "After move():");
+    c.erase(newend, c.end()); //actually remove the items using member function erase
+    print(c, "After erase():");
+    std::cout << "capacity:" << c.capacity() << std::endl; //size is reduced to 5, but the capacity is still 10, which mean still 10 items memory is occupied.
+    //if that memmory is imported for reuse, call shrink_to_fit to release the unused memory
+    //c.shrink_to_fit(); //c++11
+    std::vector<int>(c).swap(c);//before c++11
+    std::cout << "after shrink_to_fit(), capacity:" << c.capacity() << std::endl; //size is reduced to 5, but the capacity is still 10, which mean still 10 items memory is occupied.
+
+
+    //remove elements from a list
+    std::list<int> lst{1,4,6,1,1,1,1,12,18,16};
+    print(lst, "Original list:");
+    //auto itr = std::remove(lst.begin(), lst.end(), 1); //Complexity O(n)
+    //lst.erase(itr, lst.end());
+    //print(lst, "after std::remove and erase(),list:");
+    //beter solution
+    lst.remove(1); //tweaking the pointer directly, more efficient and simple
+    print(lst, "after list::remove(),list:");
+
+    //remove elements from associative function or unordered container
+    std::multiset<int> mc{1,4,6,1,1,1,1,12,18,16};
+    print(mc, "Original multiset:");
+    //auto iter = std::remove(mc.begin(), mc.end(), 1); //compile error, O(n)
+    //mc.erase(iter, mc.end());
+    //print(mc, "after std::remove and set::erase(), multiset:");
+    mc.erase(1); //O(logn), for unordered container, it's even better - constant time
+    print(mc, "after set::erase(), multiset:");
+
+}
+
+//bool equalTo(int e, int val) {
+//    if (e == val) {
+//        std::cout << e << " will be removed" << std::endl;
+//        return true;
+//    }
+//    return false;
+//}
+class EqualTo {
+public:
+    explicit EqualTo(int val):_val(val){}
+    bool operator() (int item) {return item == _val;}
+private:
+    int _val;
+};
+void remove_element_and_do_sth_test() {
+    //print a message whenever an item is removed
+    std::multiset<int> mc{1,4,6,1,1,1,1,12,18,16};
+    //for(std::multiset<int>::iterator it = mc.begin(); it !=mc.end(); it++) {
+    //    if (*it == 1) {
+    //        mc.erase(it); //iterator for the erased item is invalidated after erase, so the next loop when it!=mc.end();it++, the behavior is undefined
+    //        std::cout << "Erased one item of " << *it << std::endl;
+    //    }
+    //}
+    //fix
+    for(auto it = mc.begin(); it !=mc.end();) {
+        if (*it == 1) {
+            std::cout << "Erased one item of " << *it << std::endl;
+            //mc.erase(it++); //it++ will return it to erase(), and it += 1; 
+            it = mc.erase(it); //also works
+        } else {
+            it++;
+        }
+    }
+    print(mc, "after erase multiset:");
+
+    std::vector<int> vec{1,4,6,1,1,1,1,12,18,16};
+    //for(auto it = vec.begin(); it !=vec.end();) {
+    //    if (*it == 1) {
+    //        std::cout << "Erased one item of " << *it << std::endl;
+    //        vec.erase(it++); //it++ will return it to erase(), and it += 1; 
+    //    } else {
+    //        it++;
+    //    }
+    //} //only removed 3 items 1
+    //print(vec, "after erase vec:"); //{4,6,1,1,12,18,16}
+    //because for vector, after one element erased, ALL the iterator AFTER that erased element is INVALIDATED
+    //fix
+    for(auto it = vec.begin(); it !=vec.end();) {
+        if (*it == 1) {
+            std::cout << "Erased one item of " << *it << std::endl;
+            it = vec.erase(it);
+        } else {
+            it++;
+        }
+    }
+    print(vec, "after erase vec:"); //{4,6,1,1,12,18,16}
+    //better solution
+    auto equalTo = [](int e, int val) -> bool {
+        if (e == val) {
+            std::cout << e << " will be removed" << std::endl;
+            return true;
+        }
+        return false;
+    };
+    auto newend = std::remove_if(vec.begin(), vec.end(), std::bind(equalTo, std::placeholders::_1, 12));
+    //auto newend = std::remove_if(vec.begin(), vec.end(), EqualTo(12)); //also works using a functor
+    vec.erase(newend, vec.end());
+    print(vec, "after std::remove_if and erase, vec:");
+
+}
 }
 #endif //__ADVANCED_STL__
