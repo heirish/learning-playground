@@ -215,7 +215,69 @@ void remove_element_and_do_sth_test() {
     //auto newend = std::remove_if(vec.begin(), vec.end(), EqualTo(12)); //also works using a functor
     vec.erase(newend, vec.end());
     print(vec, "after std::remove_if and erase, vec:");
+}
 
+class Dog {};
+void vector_vs_deque_test() {
+    std::vector<int> vec{2,3,4,5};
+    std::cout << "vec's size:" << vec.size() << std::endl; //4
+    std::cout << "vec's capacity:" << vec.capacity() << std::endl; //4
+    vec.push_back(6);
+    std::cout << "after push_back(6), vec's size:" << vec.size() << std::endl; //5
+    std::cout << "after push_back(6), vec's capacity:" << vec.capacity() << std::endl; //8
+
+    std::vector<Dog> dogs(6); //6 Dogs created with default constructor
+    std::cout << "dogs' size:" << dogs.size() << std::endl; //6
+    std::cout << "dogs' capacity:" << dogs.capacity() << std::endl; //6
+    std::vector<Dog> dogs2; //dogs2 size() == 0, capacity() == 0
+    dogs2.resize(6); //6 dogs created iwth default constructor
+    std::cout << "dogs2' size:" << dogs2.size() << std::endl; //6
+    std::cout << "dogs2' capacity:" << dogs2.capacity() << std::endl; //6
+    std::vector<Dog> dogs3; //dogs3 size() == 0, capacity() == 0
+    dogs3.reserve(6); //no dog's default constructor invoked
+    std::cout << "dogs3' size:" << dogs3.size() << std::endl; //0
+    std::cout << "dogs3' capacity:" << dogs3.capacity() << std::endl; //6
+    //the expensive reallocation of a vector happens only when the capacity of the vector is full
+    //if we already know how many item that the vector will hold
+    //we can reserve that amount of memory for this vector
+    //so that we can avoid the expensive reallocation all together.
+
+    std::vector<int> v;
+    for(int i=0; i<1025; i++) { 
+        v.push_back(i); //11 reallocations performed(when growth ratio=2)
+    }
+    //better solution: call v.reserve(1024);before push_back
+
+    std::vector<int> v1{2,3,4,5};
+    int* p=&v1[3];
+    v1.push_back(6); //reallocation, invalidate pointers/references/iterators
+    //here it might still can print 5, that because of the memory_chunk recycle strategy in libc++, 
+    //if the item is class type, here would crash
+    std::cout << *p << std::endl; //undefined behavior, reallocation happened, *p is wild pointer
+    std::cout << "before reallocation, &v1[3]:" << std::hex << std::showbase << p << std::endl;
+    std::cout << "after reallocation, &v1[3]:" << std::hex << std::showbase << &v1[3] << std::endl;
+    //adress of v1[3] changed
+
+    std::deque<int> deq{2,3,4,5};
+    p = &deq[3];
+    deq.push_back(6); //push_front() is Ok too
+    std::cout << std::dec << *p << std::endl; //5, OK
+    std::cout << "before reallocation, &deq[3]:" << std::hex << std::showbase << p << std::endl;
+    std::cout << "after reallocation, &deq[3]:" << std::hex << std::showbase << &deq[3] << std::endl;
+    //adress of deq[3] not changed
+    //deque:inserting at either end won't invalidate pointers
+    //!!!Note:removing or inserting in the middle still will invalidate pointers/references/interator
+
+    auto c_fun = [](const int* arr, int size) {};
+    c_fun(&v1[0], v1.size());
+    //passing data from a list to C
+    std::list<int> mylist{2,3,4,5};
+    std::vector<int> vlist(mylist.begin(), mylist.end());
+    c_fun(&vlist[0], vlist.size());
+
+    auto cpp_fun = [](const bool* arr, int size) {};
+    std::vector<bool> bv{true, true, false, false};
+    //cpp_fun(&bv[0], bv.size()); //compile error
 }
 }
 #endif //__ADVANCED_STL__
