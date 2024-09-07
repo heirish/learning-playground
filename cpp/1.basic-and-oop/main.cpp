@@ -8,22 +8,22 @@ using namespace std;
 void basic_data_type()
 {
     int x{0};
-    cout << sizeof(x) << endl;
-    cout << "Integer " << sizeof(int) << endl;
-    cout << "Char " << sizeof(char) << endl;
-    cout << "Bool " << sizeof(bool) << endl;
-    cout << "Float " << sizeof(float) << endl;
-    cout << "Double " << sizeof(double) << endl;
-    cout << "Long " << sizeof(long) << endl;
-    cout << "Long Long " << sizeof(long long) << endl;
-    cout << "Unsigned Long " << sizeof(unsigned long) << endl;
-    cout << "Long Double " << sizeof(long double) << endl;
+    cout << sizeof(x) << endl; //4
+    cout << "Integer " << sizeof(int) << endl; //4
+    cout << "Char " << sizeof(char) << endl; //1
+    cout << "Bool " << sizeof(bool) << endl; //1
+    cout << "Float " << sizeof(float) << endl; //4
+    cout << "Double " << sizeof(double) << endl; //8
+    cout << "Long " << sizeof(long) << endl; //4
+    cout << "Long Long " << sizeof(long long) << endl; //8
+    cout << "Unsigned Long " << sizeof(unsigned long) << endl; //4
+    cout << "Long Double " << sizeof(long double) << endl; //16
     
 
-    cout << "Bool*" << sizeof(bool*) << endl;
-    cout << "Float*" << sizeof(float*) << endl;
-    cout << "Double*" << sizeof(double*) << endl;
-    cout << "Long*" << sizeof(long*) << endl;
+    cout << "Bool*" << sizeof(bool*) << endl; //8
+    cout << "Float*" << sizeof(float*) << endl; //8
+    cout << "Double*" << sizeof(double*) << endl; //8
+    cout << "Long*" << sizeof(long*) << endl; //8
     
     auto value1{12};
     auto value2{2.4};
@@ -31,12 +31,12 @@ void basic_data_type()
     auto value4{1.3f};
     auto value5{123ul};
     auto value6{1.3l};
-    cout << "Int " << sizeof(value1) << endl;
-    cout << "Double " << sizeof(value2) << endl;
-    cout << "Long Long " << sizeof(value3) << endl;
-    cout << "Float " << sizeof(value4) << endl;
-    cout << "unsiged long " << sizeof(value5) << endl;
-    cout << "long double " << sizeof(value6) << endl;
+    cout << "Int " << sizeof(value1) << endl; //4
+    cout << "Double " << sizeof(value2) << endl; //8
+    cout << "Long Long " << sizeof(value3) << endl; //8
+    cout << "Float " << sizeof(value4) << endl; //4
+    cout << "unsiged long " << sizeof(value5) << endl; //4
+    cout << "long double " << sizeof(value6) << endl; //16
 }
 
 void test_lambda() 
@@ -69,7 +69,7 @@ void test_heap_array()
         cout << "index:" << i << ",value: " << pArray[i] << endl;
     }
     double arr[13]{123,34,2};
-    cout << "arr size:" << sizeof(arr)/sizeof(arr[0]) << endl;
+    cout << "arr size:" << sizeof(arr)/sizeof(arr[0]) << endl; //13
     cout << size(arr) << endl;  //std::size from c++17
 
     delete [] pArray;
