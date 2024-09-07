@@ -69,5 +69,6 @@ int main(int argc, char const *argv[])
     //ADVANCED_STL::remove_elements_test();
     //ADVANCED_STL::remove_element_and_do_sth_test();
     ADVANCED_STL::vector_vs_deque_test();
+    ADVANCED_STL::object_slicing_test();
     return 0;
 }

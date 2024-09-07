@@ -279,5 +279,34 @@ void vector_vs_deque_test() {
     std::vector<bool> bv{true, true, false, false};
     //cpp_fun(&bv[0], bv.size()); //compile error
 }
+
+class DDog {
+public:
+    virtual void bark() {std::cout << "I don't have a name" << std::endl;}
+};
+class BrownDog :public DDog{
+public:
+    BrownDog(const std::string& name):_name(name){}
+    void bark() override {std::cout << "my name is " << _name << std::endl;}
+private:
+    std::string _name;
+};
+void object_slicing_test() {
+    //what is object slicing: object pushed into d is actually a sliced version of object b
+    //std::deque<DDog> d;
+    //BrownDog b("Gunner");
+    //d.push_front(b);  //actually, copy construct a Dog object from b and push to d
+    //d[0].bark(); //print: I don't have a name
+
+    //solution
+    std::deque<DDog*> d;
+    BrownDog* b = new BrownDog("Gunner");
+    d.push_front(b);  //actually, copy construct a Dog object from b and push to d
+    d[0]->bark(); //print: my name is Gunner
+    for(DDog* p:d) {
+        delete p;
+    }
+    d.clear();
+}
 }
 #endif //__ADVANCED_STL__

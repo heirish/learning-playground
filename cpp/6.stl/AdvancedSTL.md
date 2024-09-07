@@ -123,3 +123,4 @@
     - unpredictable growth -> deque
     - pointer integrity -> deque
     - frequently passed to C -> vector 
+### Object Slicing
