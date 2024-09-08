@@ -51,6 +51,15 @@ public:
 private:
     std::string _name;
 };
+class EECat {
+public:
+    EECat(const std::string& name):_name(name) {std::cout << _name << " is born" << std::endl;}
+    void miow() { std::cout << _name << " miow"<< std::endl;}
+    ~EECat() {std::cout << _name << " is destroyed." << std::endl;}
+    void prepareToDestruct() {throw 20;}
+private:
+    std::string _name;
+};
 
 void exception_destructor_test() {
     try {
@@ -71,15 +80,28 @@ void exception_destructor_test() {
 
     //what if an exception is thrown out of a destructor
     //program will crash
+    //try {
+    //    ECat cat1("Henry");
+    //    ECat cat2("Bob");
+    //    cat1.miow();
+    //    cat2.miow();
+    //} catch (int e) {
+    //    std::cout << e << " is caught." << std::endl;
+    //}
+
+    //solution2: process will not crash
+    //one problem: cat1.prepareToDestruct() throw exception, the cat1, cat2 will be destructed before exception is caught.
+    //if there's memory related function in prepareToDestruct, memory leak would happen
     try {
-        Cat cat1("Henry");
-        Cat cat2("Bob");
+        EECat cat1("Henry");
+        EECat cat2("Bob");
         cat1.miow();
         cat2.miow();
+        cat1.prepareToDestruct();
+        cat2.prepareToDestruct();
     } catch (int e) {
         std::cout << e << " is caught." << std::endl;
     }
-
 }
 }
 #endif //__destructor__
