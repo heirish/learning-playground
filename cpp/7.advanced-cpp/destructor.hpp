@@ -103,5 +103,23 @@ void exception_destructor_test() {
         std::cout << e << " is caught." << std::endl;
     }
 }
+
+class DDog {
+public:
+    DDog() {std::cout << "Dog born." << std::endl;bark();}
+    virtual void bark() { std::cout << "I am just a dog" << std::endl;}
+    void seeCat() { bark();}
+    ~DDog() { bark();}
+};
+class YellowDDog:public DDog {
+public:
+    YellowDDog() {std::cout << "Yellow dog born" << std::endl;}
+    //virtual attribute can be derived, but it's a good practice to also give virtual in the derived class too.
+    virtual void bark() {std::cout << "I am a yellow dog" << std::endl;}
+};
+void call_virtual_in_cons_destructor_test(){
+    YellowDDog d; //I am just a dog
+    d.seeCat(); //I am a yellow dog
+} //I an just a dog
 }
 #endif //__destructor__
