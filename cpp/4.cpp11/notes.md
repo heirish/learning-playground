@@ -128,11 +128,16 @@
    3.copy assignment operator(generated only if no 5,6 declared by user) (c++11: 2,4,5,6)
    4.destructor
    ```
+   
+   in c++11: if 3,4 is declared, then the generation rule of 2 is deprecated, if 2,4 is declared,  the generation rule of 3 is deprecated.
+   
 - C++11
+  
   ```
    5.move constructor(generated only if 2,3,4,6 not declared by user)
    6.move assignment operator(generated only if 2,3,4,5 not declared by user)
   ```
+  
 - class Dog{}; is equivalent to something like below
   ```
   class Dog {
@@ -141,16 +146,17 @@
     Dog(const Dog&);
     Dog& operator=(const Dog&);
     ~Dog();
-
+  
     //c++11
     Dog(Dog&&);
     Dog& operator=(Dog&&);
   };
   ```
+  
 - Test
   ```
   class Cat {//3,4 will be generated (3 is deprecated)
-    Cat(const Cat&){} //copy constructor
+    Cat(const Cat&){} //copy constructor < - user defined constructor
   };
   class Duck { //4
     Duck(Duck&&) {} //move constructor

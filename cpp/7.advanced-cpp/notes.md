@@ -126,3 +126,49 @@ use objects to manager resources:memory, hardware device, network handle, etc.
     } //mu will be unlocked here
     
     ```
+### STATIC INITIALIZATION FIASCO
+- global object的创建顺序是未知的，如果某个object在被实际创建出来被使用，程序可能crash, heirish:在本地测试时没crash,是编译器修复这个问题了?虽然没crash,但是在Dog的constructor调用c.meow()时，打印出的_name名字是空的
+  - 没重现是因为用std::string _name,如果是char* _name.由于在Dog constructing时，c还未被创建。因此调用c的meow时，c._name还是空指针,在打印的时候就会crash了
+- solution:singleton
+  ```
+  class Singleton {
+  public:
+    static Dog& getDog() {
+      static Dog d;
+      return d;
+    }
+    static Cat& getCat() {
+      static Cat c;
+      return c;
+    }
+  };
+  在使用时,Singleton::getDog().fun(); Singletone::getCat().fun();就能保证函数在使用时是有对应的object的
+  ```
+### Struct Vs. Class
+- Struct: small passive objects that carry **public data** and have no or fiew basic member functions, used for data container
+- Class: Bigger active objects that carry **private data**, interfaced through public member functions, used for more complex data structure.
+- above is just convention, you can also manually delcare private data member for structure, public data member for class.
+- the only technical differtence is the default accessibility, then there effectively is no real difference between them
+### Resource Managing Class
+Class owns some object through its pointer
+- solution 1: define copy constructor and copy assignment operator for deep copying.
+- solution 2: delete copy constructor and copy asignment operator,define clone function ->prefer: because rare case we need those, except we need to use then in container which requires copy capability, but we can solve this simply by saving pointer of object in container
+  ```
+  class Dog {
+  public:
+    virtual Dog* clone() {return new Dog(*this);} //co-variant return type
+  };
+  class YellowDog:public Dog {
+    virtua YellowDog* clone() return new YellowDow(*this);
+  };
+  void foo(Dog* dog) //YellowDog
+  {
+    //Dog* d = new Dog(*dog); //Dog
+    Dog* c = dog->clone(); //YellowDog
+  }
+
+  YellowDog d;
+  foo(&d);
+  ```
+- above is solution before c++11. after c++11, you can manage the resource using std::shared_ptr
+### Implicit type conversion

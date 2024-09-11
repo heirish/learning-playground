@@ -2,7 +2,7 @@
 #include "default_genrated_funcs.hpp"
 #include "destructor.hpp"
 #include "selfassignment.hpp"
-#include "RAII.hpp"
+#include "static_init_fiasco.hpp"
 
 int main(int argc, char const *argv[])
 {
@@ -19,6 +19,7 @@ int main(int argc, char const *argv[])
     
     //SELF_ASSIGNMENT::handle_self_assignment_test();
 
-    RAII::do_test();
+    //STATIC_INIT_FIASCO::do_test();
+    
     return 0;
 }
