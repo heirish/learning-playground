@@ -14,7 +14,7 @@ void basic_data_type()
     cout << "Bool " << sizeof(bool) << endl; //1
     cout << "Float " << sizeof(float) << endl; //4
     cout << "Double " << sizeof(double) << endl; //8
-    cout << "Long " << sizeof(long) << endl; //4
+    cout << "Long " << sizeof(long) << endl; //4, 64bit system, win:4, unix/linux:8
     cout << "Long Long " << sizeof(long long) << endl; //8
     cout << "Unsigned Long " << sizeof(unsigned long) << endl; //4
     cout << "Long Double " << sizeof(long double) << endl; //16
@@ -203,7 +203,7 @@ void test_static_member_and_derive()
 int main() {
     cout << "------------Hello----------" << endl;
     //basic:https://www.bilibili.com/video/BV1S54y1Z7Wc/?spm_id_from=333.999.0.0&vd_source=601dbc960255506eb5f6390166996d67
-    //basic_data_type();
+    basic_data_type();
     //test_lambda();
     //test_heap_array();
     //test_lvalue_rvalue();

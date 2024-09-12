@@ -172,3 +172,23 @@ Class owns some object through its pointer
   ```
 - above is solution before c++11. after c++11, you can manage the resource using std::shared_ptr
 ### Implicit type conversion
+- Implicit User defined type conversion:**Defined inside class (user defined type)**,There are 2 methods to define implicit user type conversion:
+  - 1.Use constructor that can accept a single parameter. - convert other types of object into your class
+  - 2.Use the Type conversion function. - convert an object of your class into other types
+- PRINCIPLE:make interface easy to user correctly and hard to use incorrectly, How hard is enough?Ideally, uncompilable. General guideline
+  - avoid defining seemingly unexpected conversion.
+  - avoid defining two-way(a->b, b->a) implicit conversion.
+### All casting considered
+- type conversion:
+  - implicit type conversion
+  - explicit type conversion - casting.
+- c++ styple cast:static_cast, dynamic_cast,const_cast,reinterpret_cast
+- Generally c++ style of casts are preferred over the c-style, because
+  - Easier to identify in the code.
+  - Less Usage error.C++ style provides:
+    - a.Narrowly specified purpose of each cast, and
+    - b.Run-time type check capatility.
+- summary
+  ![](images/cpp-cast.png)
+  ![](images/c-cast.png)
+  - generate code: the cast will invoke the cast function(method 2) or the constructor of the casted type(method 1)

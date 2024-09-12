@@ -3,6 +3,7 @@
 #include "destructor.hpp"
 #include "selfassignment.hpp"
 #include "static_init_fiasco.hpp"
+#include  "typeconversion.hpp"
 
 int main(int argc, char const *argv[])
 {
@@ -20,6 +21,9 @@ int main(int argc, char const *argv[])
     //SELF_ASSIGNMENT::handle_self_assignment_test();
 
     //STATIC_INIT_FIASCO::do_test();
-    
+
+    TYPE_CONVERSION::implicit_type_conversion_test();
+    TYPE_CONVERSION::casting_test();
+    TYPE_CONVERSION::casting_test2();
     return 0;
 }
