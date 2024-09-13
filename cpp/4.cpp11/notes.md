@@ -95,27 +95,121 @@
 - 函数式编程范式
 ### Rvalue Reference
 - https://www.youtube.com/watch?v=UTUdhjzws5g&t=4s&ab_channel=BoQian
+
 - https://www.youtube.com/watch?v=0xcCNnWEMgs
+
 - lvalue, rvalue
   - lvalue:An object that occupies some identifiable location in memory
+  
   - rvalue:Any object that is not a lvalue
+  
+    ```
+    //Lvalues examples
+    int i;  //i is a lvalue
+    int* p = &i; //i's address is identifiable
+    i = 2; //memory content is modified
+    
+    class dog;
+    dog d1; //lvalue of user defined type(class),
+    		//most variables in c++ code are lvalues
+    		
+    
+    //Rvalue examples
+    int x = 2; //2 is an rvalue
+    int x = i+2; //(i+2) is an rvalue <---lvalue can be used to create a rvalue
+    int* p = &(i+2); //Error, can not get (i+2)'s address
+    i+2 = 4; //Error, can not assign value to 
+    2 = i; //Error, an not assign value to 
+    
+    dog d1;
+    d1 = dog();  //dog() is rvlaue of user defined type(class)
+    
+    int sum(int x, int y) {return x+y;}
+    int i = sum(3,4); //sum(3,4) is rvalue
+    
+    
+    //Rvalues: 2, i+2, dog(), sum(3,4), x+y
+    //Lvalues: x, i, d1, p
+    
+    int i = 1;
+    int x = i+2; //(i+2) is a rvalue <---lvalue can be used to create a rvalue
+    int x = i; //i itself is a lvalue, but in this context, it's a rvalue.lvalue can be implicitly transformed to rvalue
+    //but rvalue can not be implicily transformed to lvalue, rvalue should be explicitly used to create lvalue
+    //rvalue can be used to create a lvalue
+    int v[3];
+    *(v+2) = 4; //(v+2) is rvalue, *(v+2) is lvalue
+    ```
+    
+  - misconceptions:
+  
+    ```
+    //1.function or operator always yields rvalues
+    int x = i+3; //i+3 is rvalue
+    int y = sum(3,4); //sum(3,4) is rvalue
+    
+    int myglobal;
+    int& foo() {return myglobal;}
+    foo() = 50; 
+    
+    array[3] = 50;//operator [] almost always generates lvalue
+    
+    //2.lvalues are modifiable
+    //C language:lvalues means "value suitable for left-hand-side of assignment" <---no long true in cpp
+    const int c = 1; //c is lvalue
+    c = 2; //Error, c is not modifiable
+    
+    //3.rvalues are not modifiable <---only true for the build-in types
+    i+3 = 6;//error
+    sum(3,4) = 7; //error
+    //It is not true for user defined type(class)
+    class dog;
+    dog().bark(); //bark() may change the state of the dog object
+    ```
+    
+  - summary:
+  
+    - every c++ expression yield either a rvalue or a lvalue
+    - if the expression has an identifiable memory address, it's lvalue; otherwise, rvalue
+  
+- reference
+
+  ```
+  //reference (or lvalue reference)
+  int i;
+  int& r = i;
+  int& = 5; //Error
+  //exception:constant lvalue reference can be assigned a rvalue.
+  const int& = 5; //ok
+  
+  int square(int& x) {return x*x;}
+  square(i); //ok
+  square(50); //error
+  //workaround:
+  int square(const int& x) {return x*x;} //square(i) and square(50) will work
+  ```
+  
 - moving semantics
+
 - perfect forwarding:rvalue is forwarded as rvalue, lvalue is forwarded as lvalue.
+
 - Reference Collapsing Rules(c++11)
   - T& & => T&
   - T& && => T&
   - T&& & => T&
   - T&& && => T&&
+  
 - template <typename T> struct remove_reference;   
   - it removes reference on type T
   - remove_reference<int&>::type i;  //int i
   - remove_reference<int>::type i: //int i;
+  
 - T&& is Universal Reference: rvalue, lvalue, const, non-const, etc.
   when 
   - T is a template type
   - Type deduction(reference collasping) happens to T
      - T is a function template type, not class template type.
   - int&& => rvalue, T&& => universal reference.
+  
 - std::move vs std::forward
   - std::move<T>(arg); //Turn arg into rvalue type
   - std::forward<T>(arg); //Turn arg to type of T&&

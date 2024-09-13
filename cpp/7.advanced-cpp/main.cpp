@@ -4,6 +4,7 @@
 #include "selfassignment.hpp"
 #include "static_init_fiasco.hpp"
 #include  "typeconversion.hpp"
+#include "inheritance.hpp"
 
 int main(int argc, char const *argv[])
 {
@@ -22,8 +23,11 @@ int main(int argc, char const *argv[])
 
     //STATIC_INIT_FIASCO::do_test();
 
-    TYPE_CONVERSION::implicit_type_conversion_test();
-    TYPE_CONVERSION::casting_test();
-    TYPE_CONVERSION::casting_test2();
+    //TYPE_CONVERSION::implicit_type_conversion_test();
+    //TYPE_CONVERSION::casting_test();
+    //TYPE_CONVERSION::casting_test2();
+    
+    //INHERITANCE::do_test();
+    INHERITANCE::is_a_test();
     return 0;
 }

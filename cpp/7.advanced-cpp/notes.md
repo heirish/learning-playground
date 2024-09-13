@@ -192,3 +192,32 @@ Class owns some object through its pointer
   ![](images/cpp-cast.png)
   ![](images/c-cast.png)
   - generate code: the cast will invoke the cast function(method 2) or the constructor of the casted type(method 1)
+
+### Inheritance
+  ```
+  class B {};
+  class D_priv: private B{};
+  class D_prot: protected B{};
+  class D_pub: public B{};
+  ```
+- public,protected,private inheritance: then specifies the different access control from the derived class to the base class.
+  - None of the derived class can access anything that is private in base class
+  - D_pub inherits public members of B as public and the protected members of B as protected
+  - D_priv inherits the public and protected members of base class as private
+  - D_prot inherits the public and protected members of base class as protected.
+- Casting:
+  - Any one can cast a *D_pub to B*, because public derived class **is a** special kind of base class
+  - D_priv's members and friends can cast a D_priv* to B*
+  - D_prot's members, friends and children can cast D_prot* to B*.
+- public inheritance: is-a relation
+- private inheritance: similar to has-a relation(composition). but generally compositon is a better choice
+### Maintain is-a relation for public inheritance
+- "is-a" relation: a derived class should be able to do everything the base class can do
+- summary:
+  - Precise definition of classes
+  - Don't override non-virtual functions.
+  - Don't override default parameter values for virtual functions
+  - For inheritance of shadowed functions.
+### Understanding Rvalue and Lvalue
+- notes and code are also available in 4.cpp11
+### Static Polymorphism
