@@ -3,10 +3,13 @@
 #include "destructor.hpp"
 #include "selfassignment.hpp"
 #include "static_init_fiasco.hpp"
-#include  "typeconversion.hpp"
+#include "typeconversion.hpp"
 #include "inheritance.hpp"
 #include "polymorphism.hpp"
 #include "multi-inheritance.hpp"
+#include "namespacelookup.hpp"
+#include "operatornewdelete.hpp"
+
 int main(int argc, char const *argv[])
 {
     /* code */
@@ -34,6 +37,11 @@ int main(int argc, char const *argv[])
     //POLYMORPHISM::dynamic_polymorphism_test();
     //POLYMORPHISM::static_polymorphism_test();
     
-    MULTI_INHERITANCE::do_test();
+    //MULTI_INHERITANCE::do_test();
+
+    //LOOKUP::do_test();
+    
+    OPERATOR_DELETE_NEW::do_test();
+    //OPERATOR_DELETE_NEW::new_handler_test();
     return 0;
 }

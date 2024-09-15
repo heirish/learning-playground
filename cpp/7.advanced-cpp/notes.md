@@ -329,3 +329,117 @@ composition is better than inheritance
   BullDog   OutDoorActivity(1 or more)
   Sheper    InDoorActivity(1 or more)
   ```
+### Namespace and the name lookup
+- using
+  - 1.using directive: to bring all namespace members into current scope:`using namspace std;`
+  - 2.using delcaration:
+    - a.bring one specific namespace member to current scope:`using std::cout;`
+    - b.bring a member from base class to current class's scope:`using Dog::bark;`
+  - Example
+    ```
+    using namespace std; //case 1, global scope
+    using std::cout; //case 2.a, global scope
+
+    class B {
+    public:
+      void f(int a);
+    };
+    class D:private B {
+    public:
+      void g() {
+        using namespace std; //case 1, local scope
+        cout << "From D:\n";
+      }
+      void h(){
+        using std::cout; //case 2.a,local scope
+        cout << "From D:\n";
+      }
+      using B::f; //case 2.b,class scope
+      using std::cout; //illegal
+      using namespace std; //illegal
+    };
+
+    using B::f; //illegal
+    ```
+    ```
+    class B{
+    public:
+      void f(int a);
+    };
+    class D:public {
+    public:
+      using B:f; //overcome shadowed f(int)
+      void f();  
+    };
+    D d;
+    d.f(8);
+    ```
+  - Anonymouns Namespace: 
+    - 与static defined function作用类似，Anonymouns namespace里的函数只能在当前文件中使用
+    - 如果文件中有与Anonymouns namspace内定义的函数同名的的global function, 在namespace内会优先调用本地的
+      ```
+      void g();
+      namespace {
+        void g();
+        void h() {g();} //这里的g()调用的的namespace内的
+      }
+      h();
+      ```
+- Koenig Lookup: Argument dependent lookup(ADL)
+  - compiler will not only search for one function in current scope and global scope, it will also search in function's parameter defined **namespace** too.
+  - but let compiler do the Koenig lookup is bad programming practice, you should delcare clearly which function you're actually calling
+  - For more in depth information on how ADL came to be, I suggest searching for a great blog entry by Andrew Koenig on Dr. Bobb's website.
+  - Why Koenig lookup?
+    - practical reason
+      ```
+      std::cout << "Hi.\n"; //calls std::operator<<
+      ```
+### demistifying operator new/delete
+- `dog *pd = new dog();`
+  - step 1.operator new is called to allocate memory
+  - step 2.dog's constructor is called to create dog.
+  - step 3, if step 2 throws an exception, call operator delete to free the memory allocated in step 1
+- `delete pd;`
+  - step 1.dog's destructor is called.
+  - step 2.operator delete is called to free the memory
+- why do we want to customize new/delete
+  - 1.Usage error detection:
+    - memory leak detection/garbage collection
+    - array index overrun/underrun.
+  - 2.Improve efficiency:
+    - a.clustering related objects to reduce page fault.
+    - b.fixed size allocation (good for application with many small objects).
+    - c.aglign similar size objects to same places to reduce fragmentation.
+  - 3.Perform additional tasks:
+    - Fill the deallocatied memory  with 0's - security.
+    - collect usage statistics.
+  - ... //many other usage scenario
+- writing a good memory manager is HARD! before writing your own version of new/delete, consider:
+  - tweak your comipler tward your needs.
+  - search for memory management library, E.g. Pool library from Boost
+- new handler: is a function invoked when operator new failed to allocate memory, it's purpose is to help memory allocation to succeed
+  - set_new_handler() installs a new handler and returns current new handler.
+    ```
+    void* operator new(std::size_t size) throw(std::bad_alloc) {
+      while (true) {
+        void* pMem = malloc(size); 
+        if (pMem) return pMem; // return the memory if successful
+
+        std::new_handler Handler = std::set_new_handler(0); //Get new handler
+        std::set_new_handler(Handler); 
+
+        if (Handler) {
+          (*Handler)(); //invoke new handler
+        } else {
+          throw std::bad_alloc(); //if new handler is null, throw exception
+        }
+      }
+    }
+    ```
+  - null by default.
+  - the new handler must to do one of following things
+    - 1.make more memory available
+    - 2.install a different new-handler
+    - 3.uninstall the new-handler (passing a null pointer)
+    - 4.throw an exception bad_alloc or its descendent.
+    - 5.terminate the program.
