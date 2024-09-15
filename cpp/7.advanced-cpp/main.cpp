@@ -5,7 +5,8 @@
 #include "static_init_fiasco.hpp"
 #include  "typeconversion.hpp"
 #include "inheritance.hpp"
-
+#include "polymorphism.hpp"
+#include "multi-inheritance.hpp"
 int main(int argc, char const *argv[])
 {
     /* code */
@@ -28,6 +29,11 @@ int main(int argc, char const *argv[])
     //TYPE_CONVERSION::casting_test2();
     
     //INHERITANCE::do_test();
-    INHERITANCE::is_a_test();
+    //INHERITANCE::is_a_test();
+    
+    //POLYMORPHISM::dynamic_polymorphism_test();
+    //POLYMORPHISM::static_polymorphism_test();
+    
+    MULTI_INHERITANCE::do_test();
     return 0;
 }

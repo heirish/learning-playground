@@ -193,7 +193,7 @@ Class owns some object through its pointer
   ![](images/c-cast.png)
   - generate code: the cast will invoke the cast function(method 2) or the constructor of the casted type(method 1)
 
-### Inheritance
+### Inheritance Basics
   ```
   class B {};
   class D_priv: private B{};
@@ -211,6 +211,7 @@ Class owns some object through its pointer
   - D_prot's members, friends and children can cast D_prot* to B*.
 - public inheritance: is-a relation
 - private inheritance: similar to has-a relation(composition). but generally compositon is a better choice
+- Inheritance is often usefull, but more often overused(obused) <----see below related inheritance related points
 ### Maintain is-a relation for public inheritance
 - "is-a" relation: a derived class should be able to do everything the base class can do
 - summary:
@@ -221,3 +222,110 @@ Class owns some object through its pointer
 ### Understanding Rvalue and Lvalue
 - notes and code are also available in 4.cpp11
 ### Static Polymorphism
+- Polymorphism:
+  - is-a relationship between base class and derived class
+  - Base class defined "generic" algorithm that's used by derived class
+  - The "generic" algorithm is customized by the derived class
+- dynamic polymorphism is not free, cost
+  - memory: for virtual table
+  - run-time: dynamic binding
+- Curiously recurring template pattern(static polymorphism, simulated polymorphism)
+  - Free Lunch?no, program image size cost.
+  - Generalized Static polymorphism
+    ```
+    tempalte <typename T>
+    T Max(std::vector<T> v) {
+      T max = v[0];
+      for(typename std::vector<T>::iterator it = v.begin(); it!=v.end(); ++it) {
+        if (*it > max) {
+          max = *it;
+        }
+      }
+      return max;
+    }
+    ```
+- TMP: template meta programming
+  the idea of TMP is, it moves part of the computation with typically happlens during run-time up front to the compile time.
+  therefore improves the efficiency of your program.
+### Multiple Inheritance:Devil or Angel
+- Interface Segregation Principle
+  
+  split large interfaces into smaller and more specific ones so that clients only need to know about the methods that are of interest to them
+- Diamond inheritance problem
+  - duplication of data <- solution: virtual derive from base class
+  - duplication of function <- solution: virtual derive from base class
+  - problem of initialization <- solution: most derived class responsible for initializing most base class
+- Pure Abstract Classes
+
+  Abstract Class: A class has one or more pure virtual functions
+
+  Pure Abstract Class
+  - no data
+  - no concrete functions
+- Summary:
+   - Multiple Inheritance is an important technique, e.g. ISP
+   - Derived only from PACs when using Multiple Inheiritance. <-- all that problems in diamond inheritance will disappear
+### The duality of public inheritance
+- duality:双重性，二元性
+  - inheritance of interfaces
+  - inheritance of implementaion
+- Types of Inheritance in C++:
+  - 1.Pure virtual public function - inherit interface only
+  - 2.Non-virtual public function - inherit both interface and implementation
+  - 3.Impure virtual public function - inherit interface and default implementation
+  - 4.protected function - inherit implementation only
+    ```
+    class Dog {
+      public:
+          virtual void bark() = 0; 
+          void run() {std::cout << "I am running.\n";} //2. in YellowDog
+          virtual void eat() {std::cout << "I am eating.\n";} //3 in YellowDog
+      protected:
+          void sleep() { std::cout << "I am sleeping.\n";}
+      };
+      class YellowDog:public Dog {
+      public:
+          virtual void bark() {std::cout << "I am a yellow dog.\n";} //1
+          void iSleep() {sleep();} //4
+      };
+    ```
+- As a software designer, it is very imiportant to separate the concepts of interface and implementation
+- When to use which?
+  - Interface Inheritance
+    - when:Subtyping, Polymorphism
+    - pitfalls:be careful of interface bloat, interfaces do not reveal implementation
+  - Implementation Inheritance
+    - when: generally not encouraged.
+    - pitfalls:increase code complexity
+    - guidelines for implementation inheritance:
+      - do not use inheritance for code reuse, use composition <-----move the common code to a helper class, and both derived class and base class should own that helper
+      - minimize the implementaion in base classes, base classes should be thin
+      - minimize the level of inheritance in in implementation inheritance.
+### Code reuse:inheritance vs. composition
+
+composition is better than inheritance
+- 1.less code coupling between reused code and reuser of the code.
+  - Child classs automatically inherits all parent class's public members
+  - Child class can access parent's protected members, so inheiritance breaks encapsulation
+    - friends and children, the biggest enemy of your privacy.
+- 2.Dynamic binding
+  - inheritance is bounded at compile time
+  - composition can be bounded either at compile time or at run time.
+    ```
+    class Activity{};
+    class Dog {};
+    class BullDog:public Dog{
+      Activity* _pActivity;
+    };
+    class SheperDog:public Dog {
+      Activity* _pActivity;
+    };
+    class OutDoorActivity:public Activity{};
+    class IndoorActivity:public Activity{};
+    ```
+- 3.Flexible code construct
+  ```
+  Dog       Activity
+  BullDog   OutDoorActivity(1 or more)
+  Sheper    InDoorActivity(1 or more)
+  ```
