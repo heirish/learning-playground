@@ -106,3 +106,4 @@
     - Step 6: A = {(c,f), (a,f), (d,e), (c,d),(a,b)} //weigth 6, b,c is already in the same set
 - complexity: dominated by std::sort, O(N*logN)
 ### Minimum Spanning Tree: Prim Algorithm
+![](images/prim-alg.png)

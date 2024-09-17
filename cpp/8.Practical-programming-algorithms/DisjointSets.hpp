@@ -101,5 +101,73 @@ void kruskal_alg_test() {
     g.edges.push_back(Edge('d', 'c', 3));
     Kruskal(g);
 }
+
+struct GraphP {
+    std::vector<char> vertices;
+    std::vector<Edge> edges;
+    std::vector<std::pair<char, Edge>> adjacent(char u) {
+        std::vector<std::pair<char, Edge>> res;
+        for(Edge e:edges) {
+            if (e.vertex1 == u) {
+                res.push_back(std::make_pair(e.vertex2, e));
+            } else if (e.vertex2 == u) {
+                res.push_back(std::make_pair(e.vertex1, e));
+            }
+        }
+        return res;
+    }
+};
+
+void prim(GraphP& g) {
+    std::unordered_map<char, char> A;
+    std::unordered_map<char, char> PARENT;
+    std::unordered_map<char, int> KEY;
+
+    for(auto c:g.vertices) { //for each v in V, KEY[v]=MAX, PARENT[v]=null
+        PARENT[c] = '\0';
+        KEY[c] = INT_MAX;
+    }
+    KEY['a'] = 0; //KEY[r]=0, randomly set one vertex's key to 0
+    std::vector<char> Q = g.vertices; //Q=V
+
+    while(!Q.empty()) { //O(V)
+        char u = *(std::min_element(Q.begin(), Q.end(), [&](char x, char y){ //O(V)
+            return KEY[x] < KEY[y];
+        }));
+        std::cout << "u=" << u << std::endl;
+        std::vector<char>::iterator it = std::remove(Q.begin(), Q.end(), u); //O(V)
+        Q.erase(it, Q.end()); //erase() following remove() idom
+        std::cout << "Q.size() == " << Q.size() << std::endl;
+        if (PARENT[u] != '\0') {
+            A[u] = PARENT[u];
+        }
+        std::vector<std::pair<char, Edge>> adj = g.adjacent(u); //O(E)
+        for(std::pair<char, Edge> v:adj) {
+            if (std::find(Q.begin(), Q.end(), v.first) != Q.end()  //O(V)
+                && v.second.weight < KEY[v.first]) {
+                    PARENT[v.first] = u;
+                    KEY[v.first] = v.second.weight;
+            }
+        }
+    }
+    for(auto e:A) {
+        std::cout << e.first << "--" << e.second << std::endl;
+    }
+}
+void prim_alg_test() {
+    char t[] = {'a','b', 'c', 'd', 'e', 'f'};
+
+    GraphP g;
+    g.vertices = std::vector<char>(t, t+sizeof(t)/sizeof(t[0]));
+    g.edges.push_back(Edge('a', 'b', 4));
+    g.edges.push_back(Edge('a', 'f', 2));
+    g.edges.push_back(Edge('f', 'b', 3));
+    g.edges.push_back(Edge('c', 'b', 6));
+    g.edges.push_back(Edge('c', 'f', 1));
+    g.edges.push_back(Edge('f', 'e', 4));
+    g.edges.push_back(Edge('d', 'e', 2));
+    g.edges.push_back(Edge('d', 'c', 3));
+    prim(g);
+}
 }
 #endif //__DISJOINT_SETS__
