@@ -37,10 +37,17 @@ template <typename T>
 T pi = T(3.1415926535897932384626433L);
 
 //variable template can also be specialized
+//全特化
 template<typename T> int typeID;
 template<> constexpr int typeID<int>{0};
 template<> constexpr int typeID<float>{1};
 template<> constexpr int typeID<double>{2};
+//偏特化
+template<typename T> constexpr std::size_t v = 6;
+template<typename T> constexpr std::size_t v<const T> = 100;
+
+template<std::size_t ...args>
+constexpr  std::size_t w = (args+...);
 
 void do_test() {
     test_old(1.0f);
@@ -61,6 +68,11 @@ void do_test() {
     static_assert(typeID<int> == 0);
     static_assert(typeID<float> == 1);
     static_assert(typeID<double> == 2);
+    std::cout << v<int> << std::endl; //6
+    std::cout << v<double> << std::endl; //6
+    std::cout << v<const double> << std::endl; //100
+
+    std::cout << w<1,2,3,4,5> << std::endl;
 }
 }
 #endif //__VAR_TEMPLATE__

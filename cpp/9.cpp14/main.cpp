@@ -13,7 +13,7 @@ void deprecated_fn_test() {
 
 int main(int argc, char* argv[]) {
     std::cout << "Hello cpp14" << std::endl;
-    //VAR_TEMPLATE::do_test();
+    VAR_TEMPLATE::do_test();
     //Integer_Literal::do_test();
     //LAMBDA::generic_lambda_test();
     //LAMBDA::lambda_init_capture_test();

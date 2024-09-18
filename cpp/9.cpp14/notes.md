@@ -6,6 +6,7 @@ https://www.youtube.com/watch?v=WZYKzCsACiw&ab_channel=VittorioRomeo
  template <typename T>
  constexpr bool is_float = std::is_same<T, float>::value;
  ```
+ - 变量模板也能全特化，偏特化
 ### generic lambdas: auto parameter
  ```
  auto f = [](auto x, auto y) {return x+y;};
