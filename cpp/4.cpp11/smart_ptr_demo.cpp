@@ -11,10 +11,14 @@ void do_shared_ptr_test() {
         p2->bark();
         std::cout << "p reference count:" << p.use_count() << std::endl;
         std::cout << "p2 reference count:" << p2.use_count() << std::endl;
+        p2.reset();
+        std::cout << "after p2.reset(), p reference count:" << p.use_count() << std::endl;
+        std::cout << "after p2.reset(), p2 reference count:" << p2.use_count() << std::endl;
     }
     p->bark();
     std::cout << "p reference count:" << p.use_count() << std::endl;
     Dog* rp = p.get(); //bad idea, do not mix use raw pointer and shared_ptr
+    p.reset(); //equivalent to shared_ptr().swap(*this), will call Dog's destructor here
 
     //{ //bad way
     //    Dog* d = new Dog("Tank");

@@ -90,8 +90,8 @@ int main(int argc, char const *argv[])
     //test_user_defined_literals();
 
     //smart ptr
-    //SMART_PTR_DEMO::do_shared_ptr_test();
+    SMART_PTR_DEMO::do_shared_ptr_test();
     //SMART_PTR_DEMO::do_weak_ptr_test();
-    SMART_PTR_DEMO::do_unique_ptr_test();
+    //SMART_PTR_DEMO::do_unique_ptr_test();
     return 0;
 }
