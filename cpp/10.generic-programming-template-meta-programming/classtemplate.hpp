@@ -3,7 +3,6 @@
 #include <iostream>
 namespace CLASS_TEMPLATE{
 
-//below is a template class
 template <typename T>
 class MyVector{
 public:
