@@ -18,8 +18,12 @@ https://www.youtube.com/watch?v=WZYKzCsACiw&ab_channel=VittorioRomeo
  f(x); //12
  ```
 ### binary literals: '0b', `int x= 0b0101;`
+- 使用三位分割，对应文件系统的权限分组
 ### digit separators: ',  `int x = 1000'000'000;`
  > Optional single quotes (') may be inserted between the digits as a separator; they are ignored when determining the value of the literal.
+- 十进制数字使用三位的分隔，对应英文习惯的thousand,million, billion等单位
+- 十进制数字使用四位的分隔，对应中文习惯的万，亿等单位
+- 十六进制数字使用两位或四位分隔，对应字节或双字节
 ### decltype(auto): 
 - 总结下来就是decltype可以保留references, cv_qualifiers, 但是在c++11中不能用decltype(auto), c++14支持了，其中的auto实际用的就是=右边的表达式
 - 也可以只用auto声明变量，只不过reference, const属性会消失，需要手动加上

@@ -9,6 +9,8 @@
 #include "multi-inheritance.hpp"
 #include "namespacelookup.hpp"
 #include "operatornewdelete.hpp"
+#include "NRVO.hpp"
+#include "vectornoexceptmove.hpp"
 
 int main(int argc, char const *argv[])
 {
@@ -41,7 +43,12 @@ int main(int argc, char const *argv[])
 
     //LOOKUP::do_test();
     
-    OPERATOR_DELETE_NEW::do_test();
+    //OPERATOR_DELETE_NEW::do_test();
     //OPERATOR_DELETE_NEW::new_handler_test();
+    
+    //NRVO::do_test();
+
+    NO_EXCEPT_MOVE::do_test();
+
     return 0;
 }

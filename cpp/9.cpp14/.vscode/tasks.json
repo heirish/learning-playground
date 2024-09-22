@@ -9,7 +9,7 @@
 				"-fdiagnostics-color=always",
 				"-g",
 				"-O0",
-				"-std=c++14",
+				"-std=c++17",
 				"${workspaceFolder}\\*.cpp",
 				"-o",
 				"${workspaceFolder}\\main.exe"

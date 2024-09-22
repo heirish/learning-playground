@@ -443,3 +443,11 @@ composition is better than inheritance
     - 3.uninstall the new-handler (passing a null pointer)
     - 4.throw an exception bad_alloc or its descendent.
     - 5.terminate the program.
+### NRVO: named return value optimization
+- before c++11, 返回一个本地对象一般会通过copy这个对象。编译器会尝试进行优化，把对象直接构造到调用者的栈上
+- after c++11, 编译器也会尝试将对象直接构造到调者栈上的优化。但在没有优化的情况下，编译器将试图把本地对象move出去，而非copy.
+- move行为不需要程序员调用std::move进行干预，使用std::move返而会影响返回值优化
+### noexcept copy/move constructor
+- 使用vector，当需要动态扩容，或当insert,erase导致元素位置移动时，vector会试图把item move到新的内存。因此需要元素对象保证强异常安全性。
+- 如果元素类型没有提供一个保证不抛异常的move constructor, vector通常会使用copy constructor.
+- 对于copy代价比较高的user defined type, 应该定义move constructor,并且声明为noexcept, 或只在容器中放置对象的智能指针。
