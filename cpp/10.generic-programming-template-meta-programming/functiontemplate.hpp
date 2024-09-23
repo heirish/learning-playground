@@ -15,7 +15,8 @@ float max(float a, float b) {
 }
 
 template<typename T>
-T max(T a, T b) {
+T max(const T& a, const T& b) { //better version for user-defined data type
+//T max(T a, T b) {
     std::cout << "max(T,T)\n";
     return (a>b)?a:b;
 }
@@ -53,8 +54,15 @@ std::ostream& operator<<(std::ostream& os, const DogI& dog) {
 }
 
 template<>
-DogI max<DogI>(DogI lhs, DogI rhs) {
+DogI max<DogI>(const DogI& lhs, const DogI& rhs) {
     return lhs.getAge() > rhs.getAge()? lhs : rhs;
+}
+
+template<typename T, std::size_t N>
+void foo(T input) {
+    for(std::size_t i = 0; i<N; i++) {
+        std::cout << input << std::endl;
+    }
 }
 
 void do_test() {
@@ -66,10 +74,13 @@ void do_test() {
     Dog d2{"Yellow", 1};
     std::cout << "max(d1, d2):" << max(d1, d2) << std::endl; //using max(T,T)
 
-    //全特化测试
+    //full specialization全特化测试
     DogI di1{"Seven", 3};
     DogI di2{"Yellow", 1};
     std::cout << max(di1, di2) << std::endl;
+
+    //non object-type template parameter
+    foo<float, 3>(3.14f);
 }
 
 class A {
@@ -94,6 +105,30 @@ public:
     template <typename T>
     void print(T msg){} 
 };
+
+template <typename T>
+T Sum(T t) {
+    return t;
+}
+template <typename T, typename... Args>
+auto Sum(T start, Args... args) {
+//T Sum(T start, Args... args) {
+    return start + Sum(args...);
+}
+void test(const int& v) {
+   std::cout << v << std::endl; 
+}
+void vairadic_function_template() {
+    std::cout << Sum(1,2,3,4) << std::endl;
+    //std::cout << Sum<double>(1,2.2f,3.7,4) << std::endl;
+    std::cout << Sum(1,2.2f,3.7,4) << std::endl; //c++11之后可以用auto作为返回值，让编译器自动推导类型
+
+    int a = 1;
+    test(a);
+    test(2);
+}
+
+
 
 };
 #endif //__FUNCTION_TEMPALTE__
