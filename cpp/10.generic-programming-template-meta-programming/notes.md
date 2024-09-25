@@ -1,5 +1,5 @@
 编译期多态
-### Generic programming - Templates
+### =========Generic programming - Templates============
 https://www.youtube.com/watch?v=S2OFJe73fxA&list=PLvv0ScY6vfd8j-tlhYVPYgiIyXduu6m-L&index=71&ab_channel=MikeShah
 
 https://www.bilibili.com/video/BV1et4y1u75A?p=6&vd_source=601dbc960255506eb5f6390166996d67
@@ -12,7 +12,21 @@ https://www.bilibili.com/video/BV1et4y1u75A?p=6&vd_source=601dbc960255506eb5f639
   - Note that a function template is not a function. 
   - The same distinction applies to "class template" versus "template class".
 ### function template
--  `template <typename T> T max(T, T);`
+- https://en.cppreference.com/w/cpp/language/function_template
+- `template <typename T> T max(T, T);`
+- typename关键字
+  - template声明的参数列表：用于声明模板参数类型，这个类型在后续可以作为datatype语法使用`template <typename T1, typename T2>`
+  - 在template声明/定义体内:用于声明模板参数的从属限定名也为一个datetype
+    ```
+    template<typename T>
+    void printColl(const T& col) {
+      typename T::const_iterator pos;
+      typename T::const_iterator end = col.end();
+      for(pos = col.begin(); pos != end; pos++) {
+        std::cout << *pos << std::endl;
+      }
+    }
+    ```
 - 可以从参数自动推导出T的data type, 所以可以不用加<>指定参数类型
 - 可以为类的构造函数和普通成员函数创建function template, 但不能为虚函数和析构函数创建
 - function template Specialization
@@ -42,6 +56,7 @@ https://www.bilibili.com/video/BV1et4y1u75A?p=6&vd_source=601dbc960255506eb5f639
   - C, variadic functions:`int printf(const char* fmt, ...)`
 - abbreviated function templates (since c++20): `auto square2(auto input) {return input*input;}`
 ### class template
+- https://en.cppreference.com/w/cpp/language/class_template
 - 声明时在class前加上`template <typename T>`
 - 如果成员函数是在class声明外写函数体，函数体前面也要加上 `template <typename T>`, 并且类名也要加上`<T>`
   ```
@@ -54,3 +69,12 @@ https://www.bilibili.com/video/BV1et4y1u75A?p=6&vd_source=601dbc960255506eb5f639
   void Obj<T>::print() const{}
   ```
 - 成员函数还可以是另一个个数据类型的template function.`template <typename U>`
+- CTAD(since cpp17):Class template argement deduction
+- use -Weffc++ with g++ to write effective modern c++
+  如果是使用g++进行编译，可以加上-Weffc++选项，编译器会检查代码是否符合effective c++中的项，如果不符合，会warning并给出修改建议
+- default paremeters
+  - `template <class T, class Deleter = std::default_delete<T>> class unique_ptr`
+  - `template <class T, class Allocator = std::allocator<T>> class vector`
+### ================MetaProgramming================
+https://www.youtube.com/watch?v=VBI6TSo8Zog&list=PLWxziGKTUvQFIsbbFcTZz7jOT4TMGnZBh&ab_channel=BitsOfQ
+- what is template metaprogramming?

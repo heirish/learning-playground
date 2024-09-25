@@ -10,6 +10,7 @@
 				"-g",
 				"-O0",
 				"-std=c++17",
+				"-Weffc++",
 				"${workspaceFolder}\\*.cpp",
 				"-o",
 				"${workspaceFolder}\\main.exe"
