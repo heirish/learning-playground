@@ -65,6 +65,11 @@ void foo(T input) {
     }
 }
 
+template<typename T>
+void foo(T x) {
+    std::cout << __PRETTY_FUNCTION__ << std::endl;
+}
+
 void do_test() {
     std::cout << "max(3,4)=" << max(3,4) << std::endl;  //using max(int,int)
     std::cout << "max(1.2,4.9)=" << max(1.2f,4.9f) << std::endl;  //using max(float,float)
@@ -81,6 +86,11 @@ void do_test() {
 
     //non object-type template parameter
     foo<float, 3>(3.14f);
+
+    //test template tyupe deduction
+    foo(42);   //void FUNCTION_TEMPLATE::foo(T) [T = int]
+    foo(4.2);  //void FUNCTION_TEMPLATE::foo(T) [T = double]
+    foo("hello"); //void FUNCTION_TEMPLATE::foo(T) [T = const char*]
 }
 
 class A {
