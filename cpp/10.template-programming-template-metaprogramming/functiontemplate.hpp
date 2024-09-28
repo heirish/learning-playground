@@ -66,7 +66,7 @@ void foo(T input) {
 }
 
 template<typename T>
-void foo(T x) {
+void foo1(T x) {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
@@ -84,13 +84,12 @@ void do_test() {
     DogI di2{"Yellow", 1};
     std::cout << max(di1, di2) << std::endl;
 
-    //non object-type template parameter
     foo<float, 3>(3.14f);
 
-    //test template tyupe deduction
-    foo(42);   //void FUNCTION_TEMPLATE::foo(T) [T = int]
-    foo(4.2);  //void FUNCTION_TEMPLATE::foo(T) [T = double]
-    foo("hello"); //void FUNCTION_TEMPLATE::foo(T) [T = const char*]
+    //test template type deduction
+    foo1(42);   //void FUNCTION_TEMPLATE::foo(T) [T = int]
+    foo1(4.2);  //void FUNCTION_TEMPLATE::foo(T) [T = double]
+    foo1("hello"); //void FUNCTION_TEMPLATE::foo(T) [T = const char*]
 }
 
 class A {

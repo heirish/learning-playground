@@ -4,6 +4,7 @@ https://www.youtube.com/watch?v=vwrXHznaYLA&ab_channel=CppCon
 https://www.youtube.com/watch?v=VIz6xBvwYd8&ab_channel=CppCon
 ### =========Template programming============
 https://www.youtube.com/watch?v=S2OFJe73fxA&list=PLvv0ScY6vfd8j-tlhYVPYgiIyXduu6m-L&index=71&ab_channel=MikeShah
+
 - avoid code copy&paste
 - serve as a blueprint for the compiler to generate code for us.
 - side effect: code bloat
@@ -12,6 +13,9 @@ https://www.youtube.com/watch?v=S2OFJe73fxA&list=PLvv0ScY6vfd8j-tlhYVPYgiIyXduu6
   - This ambiguity is best avoided by using "function template" for the former and something like "function template instance" or "instance of a function template" for the latter. 
   - Note that a function template is not a function. 
   - The same distinction applies to "class template" versus "template class".
+
+![](images/templates.png)
+上面的截图是2016年的cppcon,在c++17中class template也支持type deduction了
 ### function template
 - https://en.cppreference.com/w/cpp/language/function_template
 - function templates **are not functions.** they are templates for making functions
@@ -33,8 +37,9 @@ https://www.youtube.com/watch?v=S2OFJe73fxA&list=PLvv0ScY6vfd8j-tlhYVPYgiIyXduu6
 - 可以为类的构造函数和普通成员函数创建function template, 但不能为虚函数和析构函数创建
 - function template Specialization
   - 可以提供一个具体化(特化)的函数定义，当编译器找到与函数调用匹配的具体化定义时，将使用该定义，不再寻找模板.`template<> func(params)`, 这样可以为特定类型的数据定义特定类型的逻辑。
-  - 函数匹配顺序:普通函数>特化函数模板>普通函数模板
-  - partial specialization, 还是一个template，只是在tempalte type parameter上加了更多的限定,如加&, 加*
+  - 函数匹配顺序:普通函数>特化函数模板>主函数模板
+  - function template不支持partial specialization.
+    如果需要，则通过将函数逻辑代理到class template进行处理，因为class template是可以进行partial specialization的
 - 函数模板一般放在头文件中，函数模板只是函数的描述，并没有实体
   - 函数模板的全特化有实体，编译的原理的普通函数一样，所以，声明放在头文件，定义放在源文件
        ```
@@ -79,6 +84,27 @@ https://www.youtube.com/watch?v=S2OFJe73fxA&list=PLvv0ScY6vfd8j-tlhYVPYgiIyXduu6
 - default paremeters
   - `template <class T, class Deleter = std::default_delete<T>> class unique_ptr`
   - `template <class T, class Allocator = std::allocator<T>> class vector`
+- Specialization
+  - full specialization
+  - partial specialization: is still a template.
+    the syntax for a full specialization always starts with template<>. 
+    and the syntax for a partial specialization always contains angle brackets after the template-name
+### Explicit instantiation definition
+- instantiation：compiler根据提供的template type parater生成对应的代码。
+```
+template int abs(int);
+template class vector<int>;
+template bool is_void<void>;
+```
+- This special syntax means "Please instantiate this template, with the give template paramters, as if it were being used right here."Semantically, it's not giving the compiler any new information. it's just asking the compiler to instantiate  a definition of the template entity right here.
+- **It looks like a full specialization, but without <>** 
+- to tell the compiler that you have done this in a different translation unit, and therefore the compiler needn't instantiate this template again in this .o file, just add extern.
+```
+extern template int abs(int);
+extern template class vector<int>;
+extern template bool is_void<void>;
+```
+- DON'T mix use specialization and explicit instantiation for the same template.
 ### ================Template MetaProgramming================
 https://www.youtube.com/watch?v=VBI6TSo8Zog&list=PLWxziGKTUvQFIsbbFcTZz7jOT4TMGnZBh&ab_channel=BitsOfQ
 - what is template metaprogramming?
