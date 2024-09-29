@@ -57,7 +57,7 @@ https://www.youtube.com/watch?v=S2OFJe73fxA&list=PLvv0ScY6vfd8j-tlhYVPYgiIyXduu6
        ```
 - template type parameters
     - can have more than one parameters, `template <typename T>`, `template <typename T1, typename T2>`
-    - non object-type parameters, `template <typename T, std::size_t N> struct array;`
+    - non-type parameters, `template <typename T, std::size_t N> struct array;`
     - can have non parameters, template full specialization:`template <>`
 - Variadic function templates, since c++11
   - C, variadic functions:`int printf(const char* fmt, ...)`
@@ -78,7 +78,7 @@ https://www.youtube.com/watch?v=S2OFJe73fxA&list=PLvv0ScY6vfd8j-tlhYVPYgiIyXduu6
   void Obj<T>::print() const{}
   ```
 - 成员函数还可以是另一个个数据类型的template function.`template <typename U>`
-- CTAD(since cpp17):Class template argement deduction
+- CTAD(since cpp17):Class template argument deduction
 - use -Weffc++ with g++ to write effective modern c++
   如果是使用g++进行编译，可以加上-Weffc++选项，编译器会检查代码是否符合effective c++中的项，如果不符合，会warning并给出修改建议
 - default paremeters
@@ -105,6 +105,33 @@ extern template class vector<int>;
 extern template bool is_void<void>;
 ```
 - DON'T mix use specialization and explicit instantiation for the same template.
+- When is instaniation needed?
+  - A decent rule of thumb is:Never instaniate anyting you don't absolutely 100% have to.
+### Variadic Template parameter deduction
+- As far as explicitly specified template parameters are concerned, the first pack-expansion(Args... args) encountered in the template parameter list "soaks up" all the remaining specified template parameters.the type deduction step might wind up lenthening `args`,but will never shorten it.
+  ```
+  template <typename T, typename... Args, typename V> void f();
+  f<int,char,int>(); //T=int,Args=<char,int>, V can not be deduced
+
+  template <typename... Args, typename U> void g(U);
+  g<int,char>(3.1); //Ts=<int,char>, U=double(deduced from argument 3.2)
+  
+  template<typename... Args> void h(Args...)
+  g<int,char>(0,0,3.4); //Args=<int,char,double>
+  ```
+- as far as deduction is concerned, a parameter-pack(Args... args)contributes to deduction only if it comes at the very end of the function paramter list.Otherwise, it does not contribute to deduction.
+  ```
+  template<typename... Args, typename U>void f(U, Args...);
+  f('x', 1, 2); //U=char, Args=<int,int>
+
+  template<typename T, typename... Args>void f(Args... args, T);
+  g('x', 1, 2); //args doesn't contribute to deduction, so this fails
+
+  template<typename T, typename... Args>void f(Args... args, T);
+  g<int,int,int>('x', 1, 2); //args doesn't contribute to deduction
+  //but we explicitly stated T=int,Us=<int,int> which happens to work.
+  //必须写全，少一个都不行
+  ```
 ### ================Template MetaProgramming================
 https://www.youtube.com/watch?v=VBI6TSo8Zog&list=PLWxziGKTUvQFIsbbFcTZz7jOT4TMGnZBh&ab_channel=BitsOfQ
 - what is template metaprogramming?

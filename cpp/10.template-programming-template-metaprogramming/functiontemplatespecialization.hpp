@@ -46,7 +46,7 @@ void partial_specialization_delegate() {
     //function template can not be partial specialized, 
     //if you need partial specialization.
     //then you should delegate all the work to a class template, which can be partially specialized
-    //non object-type template parameter
+    //non-type template parameter
     int* p;
     std::cout << "is_pointer(p)" << is_pointer(p) << std::endl; //1
     std::cout << "is_pointer(nullptr)" << is_pointer(nullptr) << std::endl; //1, 调的是全特化的is_pointer_impl<std::nullptr_t>
