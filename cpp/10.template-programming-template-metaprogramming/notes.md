@@ -88,7 +88,8 @@ https://www.youtube.com/watch?v=S2OFJe73fxA&list=PLvv0ScY6vfd8j-tlhYVPYgiIyXduu6
   - full specialization
   - partial specialization: is still a template.
     the syntax for a full specialization always starts with template<>. 
-    and the syntax for a partial specialization always contains angle brackets after the template-name
+    and the syntax for a partial specialization always contains angle brackets after the template-name.
+    - partial specialization是介于primary template和全特化之间的，只指定了部分type特性
 ### Explicit instantiation definition
 - instantiation：compiler根据提供的template type parater生成对应的代码。
 ```
@@ -136,3 +137,17 @@ extern template bool is_void<void>;
 https://www.youtube.com/watch?v=VBI6TSo8Zog&list=PLWxziGKTUvQFIsbbFcTZz7jOT4TMGnZBh&ab_channel=BitsOfQ
 - what is template metaprogramming?
   - the writing of computer programs that manipulate other programs (or themselves) as if they were data.
+  - using templated&specializations to do this.
+  - in particular we look at 2 things.
+    - type traits: to query properties, then combine type traits with `if constexpr` statements to actually choose a different implementation.
+    - metafunction:to manipulate types.input and output is type. e.g.
+      ```
+      template <typename T>
+      struct strip_pointer {
+        using type = T;
+      };
+      template <typename T> //partial specialization
+      struct stip_pointer<T*> {
+        using type = T;
+      };
+      ```

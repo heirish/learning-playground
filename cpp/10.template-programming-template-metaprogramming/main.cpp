@@ -2,6 +2,8 @@
 #include "functiontemplatespecialization.hpp"
 #include "classtemplate.hpp"
 #include "explicitinstantiation.hpp"
+
+#include "metaproghelloworld.hpp"
 int main(int argc, char const *argv[])
 {
     /* code */
@@ -15,6 +17,8 @@ int main(int argc, char const *argv[])
     //CLASS_TEMPLATE::CTAD_test();
     //CLASS_TEMPLATE::default_parameter_test();
     
-    TU::do_test();
+    //TU::do_test();
+    
+    meta_hello::do_test();
     return 0;
 }
