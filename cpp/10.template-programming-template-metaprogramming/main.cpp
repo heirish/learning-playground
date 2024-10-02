@@ -2,11 +2,14 @@
 #include "functiontemplatespecialization.hpp"
 #include "classtemplate.hpp"
 #include "explicitinstantiation.hpp"
+#include "temptempparam.hpp"
 
 #include "metaproghelloworld.hpp"
+#include "metafuncContainsType.hpp"
 int main(int argc, char const *argv[])
 {
     /* code */
+    ////////////////////Basic Template programming////////////////
     //FUNCTION_TEMPLATE::do_test();
     //FUNCTION_TEMPLATE::vairadic_function_template();
 
@@ -18,7 +21,13 @@ int main(int argc, char const *argv[])
     //CLASS_TEMPLATE::default_parameter_test();
     
     //TU::do_test();
-    
-    meta_hello::do_test();
+
+    temp_temp_param::do_test(); 
+
+
+    //////////////////Template Metaprogramming////////////////////
+    //meta_hello::do_test();
+    //meta_containstype::runtime_ex();
+    //meta_containstype::do_test();
     return 0;
 }

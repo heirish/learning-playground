@@ -2,7 +2,7 @@
 
 https://www.youtube.com/watch?v=vwrXHznaYLA&ab_channel=CppCon
 https://www.youtube.com/watch?v=VIz6xBvwYd8&ab_channel=CppCon
-### =========Template programming============
+### =========Basic Template programming============
 https://www.youtube.com/watch?v=S2OFJe73fxA&list=PLvv0ScY6vfd8j-tlhYVPYgiIyXduu6m-L&index=71&ab_channel=MikeShah
 
 - avoid code copy&paste
@@ -133,6 +133,14 @@ extern template bool is_void<void>;
   //but we explicitly stated T=int,Us=<int,int> which happens to work.
   //必须写全，少一个都不行
   ```
+### TODO:template template parameters
+-  you need to use template template syntax to pass a parameter whose type is a template dependent on another template like this:
+  ```
+  //H is a template template parameter
+  template <template<class> class H, class S>
+  void f(const H<S> &value) {
+  }
+  ```
 ### ================Template MetaProgramming================
 https://www.youtube.com/watch?v=VBI6TSo8Zog&list=PLWxziGKTUvQFIsbbFcTZz7jOT4TMGnZBh&ab_channel=BitsOfQ
 - what is template metaprogramming?
@@ -151,3 +159,4 @@ https://www.youtube.com/watch?v=VBI6TSo8Zog&list=PLWxziGKTUvQFIsbbFcTZz7jOT4TMGn
         using type = T;
       };
       ```
+- metafunction example: check whether one tuple contains specific type.`contains_type`
