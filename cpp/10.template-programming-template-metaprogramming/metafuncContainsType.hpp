@@ -61,6 +61,7 @@ struct contains_type<SEARCH, std::tuple<>>:std::false_type{};
 //在deduce的时候IF,THEN,ELSE三个还是都需要参与，就导致在deduce THEN的时候会在is_same中调用std::tuple_element_t<tuple_size, TUPLE>而报越界错误
 //解决方法是添加一个metafunction,使越界时返回一个nonetype
 //to let tuple_element return NoneType if start_from larger than tuple size
+//这个办法可能会隐藏一些代码错误，更好的方法见metatypelist.hpp中的contains_type的处理
 struct NoneType_t{};
 template<bool out_of_range, std::size_t index, typename TUPLE>
 struct tuple_element;
@@ -77,6 +78,10 @@ struct tuple_element<false, index, TUPLE> {
 template<std::size_t start_from, typename TUPLE>
 static bool constexpr index_out_of_range = (start_from >= std::tuple_size<TUPLE>::value);
 
+//template alias
+template<std::size_t start_from, typename TUPLE>
+using tuple_element_t = typename tuple_element<index_out_of_range<start_from, TUPLE>, start_from, TUPLE>::type; 
+
 template <typename SEARCH, typename TUPLE, std::size_t start_from=0>
 struct contains_type1:
     if_<
@@ -85,7 +90,8 @@ struct contains_type1:
         std::false_type,
         typename if_<
             //std::is_same<SEARCH, typename tuple_element<(start_from >= std::tuple_size<TUPLE>::value), start_from, TUPLE>::type>::value,
-            std::is_same<SEARCH, typename tuple_element<index_out_of_range<start_from, TUPLE>, start_from, TUPLE>::type>::value,
+            //std::is_same<SEARCH, tuple_element_t<start_from, TUPLE>>::value,
+            std::is_same_v<SEARCH, tuple_element_t<start_from, TUPLE>>,
             std::true_type,
             contains_type1<SEARCH, TUPLE, start_from+1>
         >::type

@@ -6,6 +6,7 @@
 
 #include "metaproghelloworld.hpp"
 #include "metafuncContainsType.hpp"
+#include "metatypelist.hpp"
 int main(int argc, char const *argv[])
 {
     /* code */
@@ -22,12 +23,14 @@ int main(int argc, char const *argv[])
     
     //TU::do_test();
 
-    temp_temp_param::do_test(); 
+    //temp_temp_param::do_test(); 
 
 
     //////////////////Template Metaprogramming////////////////////
     //meta_hello::do_test();
-    //meta_containstype::runtime_ex();
-    //meta_containstype::do_test();
+    meta_containstype::runtime_ex();
+    meta_containstype::do_test();
+    //meta_typelist_lib::runtime_ex();
+    //meta_typelist_lib::do_test();
     return 0;
 }
