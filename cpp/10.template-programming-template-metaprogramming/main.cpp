@@ -7,6 +7,8 @@
 #include "metaproghelloworld.hpp"
 #include "metafuncContainsType.hpp"
 #include "metatypelist.hpp"
+
+#include "advancedmetacattuple.hpp"
 int main(int argc, char const *argv[])
 {
     /* code */
@@ -23,7 +25,7 @@ int main(int argc, char const *argv[])
     
     //TU::do_test();
 
-    temp_temp_param::do_test(); 
+    //temp_temp_param::do_test(); 
 
 
     //////////////////Template Metaprogramming////////////////////
@@ -32,5 +34,9 @@ int main(int argc, char const *argv[])
     //meta_containstype::do_test();
     //meta_typelist_lib::runtime_ex();
     //meta_typelist_lib::do_test();
+
+    ////////////////Advances template metaprogramming////////////////////
+    cat_tuple::do_tuple_test();
+    cat_tuple::do_tuple_cast_test();
     return 0;
 }

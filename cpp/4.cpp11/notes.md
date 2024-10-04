@@ -193,10 +193,12 @@
 - perfect forwarding:rvalue is forwarded as rvalue, lvalue is forwarded as lvalue.
 
 - Reference Collapsing Rules(c++11)
-  - T& & => T&
-  - T& && => T&
-  - T&& & => T&
-  - T&& && => T&&
+  
+  - A& & => A&
+  
+  - A& && => A&
+  - A&& & => A&
+  - A&& && => A&&
   
 - template <typename T> struct remove_reference;   
   - it removes reference on type T
@@ -206,13 +208,42 @@
 - T&& is Universal Reference: rvalue, lvalue, const, non-const, etc.
   when 
   - T is a template type
+  
   - Type deduction(reference collasping) happens to T
      - T is a function template type, not class template type.
+     
   - int&& => rvalue, T&& => universal reference.
+  
+     ```
+     //type deduction is involved = Forward reference
+     //forward reference: accpet both lvalue and rvalue references
+     //makes use of "reference collapsing" to "perserve" value category.
+     template<typename A, typename B, typename C>
+     void foo(A&& a, B&& b, C&& c){bar(a,b,c,true,42);}
+     
+     //typde deduction is not involved = Rvalue reference
+     void foo(int&& a, int&& b, int&& c){bar(a,b,c,true,42);}
+     ```
   
 - std::move vs std::forward
   - std::move<T>(arg); //Turn arg into rvalue type
+  
   - std::forward<T>(arg); //Turn arg to type of T&&
+  
+    ```
+    //std::forward(conteptually)
+    template<typename T>
+    T&& std:forward(T&& param) {
+    	if (is_lvalue_reference<T>::value>) {  //if T indicates lvalue
+    		return param;					   //do nothing
+    	} else {							   //else
+    		return std::move(param);		   //cast to rvalue
+    	}
+    }
+    
+    //std::forward == conditional cast
+    //Returns T& or T&&(reference collapsing!)
+    ```
 
 ### Compiler Generated Functions
 - C++03

@@ -62,5 +62,6 @@ void foo(MyVector v);
 MyVector createMyVector();
 void do_move_semantic_test();
 void do_perfect_forwarding_test();
+void test_move_forward();
 }
 #endif //RVALUEF_DEMO

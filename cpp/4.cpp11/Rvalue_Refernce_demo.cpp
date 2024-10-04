@@ -52,5 +52,17 @@ void do_perfect_forwarding_test() {
     perfect_relay(createMyVector());
 }
 
+void bar(int&& i) {
+    std::cout << __PRETTY_FUNCTION__ << std::endl;
+}
+void test_move_forward() {
+    bar(3); //ok
+    int a = 4;
+    //bar(a); //compile error, not matching function call to bar. because it requires rvalue.
+    bar(std::move(a)); //ok, std::move convert lvalue to rvalue;
+    bar(std::forward<int>(a)); //ok, 如果是非template,直接变成rvalue.
+    bar(std::forward<int>(1)); //ok, 如果是非template,直接变成rvalue.
 
+    //move用在非template上, forward用在template上(T&&)
+}
 }

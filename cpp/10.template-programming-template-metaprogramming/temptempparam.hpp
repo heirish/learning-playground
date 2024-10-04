@@ -21,7 +21,8 @@ struct TEST1 {
 };
 
 template<template<typename> typename TTP>
-struct TEST1<TTP,int> {
+//struct TEST1<TTP<int>> { //带template template parameter的， 其实参只能是template或alias type alias,不能是实例化的template
+struct TEST1<TTP,int> { 
     using type = int;
     void printtype() {
         std::cout << "partial specialized version:" << __PRETTY_FUNCTION__ << std::endl; //Macro available in GCC

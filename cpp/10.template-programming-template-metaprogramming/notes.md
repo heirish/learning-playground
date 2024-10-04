@@ -201,3 +201,8 @@ https://www.youtube.com/watch?v=VBI6TSo8Zog&list=PLWxziGKTUvQFIsbbFcTZz7jOT4TMGn
       using Type=typename DependentTemplate<T1>::template ClassName<T2>;
     }
     ```
+- metaprogramming manipulate data(compile time/run time)
+  - figure out steps at compile time
+  - Ensure no unneccessary copies/movies at run time
+    - lvalues + rvalues
+    - perfect forwarding

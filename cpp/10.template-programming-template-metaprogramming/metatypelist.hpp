@@ -40,7 +40,7 @@ struct empty:std::false_type{};
 //make metafunction also works for other tempalte type, such as tuple
 //using template template parameters
 template<template<typename...> typename LIST>
-struct empty<LIST<>>:std::true_type{};
+struct empty<LIST<>>:std::true_type{};//LIST<>还是一个tempalte, 并不是被实例化的
 
 //template variables
 template<typename LIST>
@@ -116,7 +116,7 @@ struct back<LIST<T0>> {
 
 //直接用variadic template parameter deduce行不能，因为variadic template parameter是greedy的，如果放在第一个参数,会匹配所有接下来的参数，这样Tn就无法deduce
 //template<typename... T0toN_1, typename Tn>
-//struct back<type_list<T0toN_1..., Tn>>{ //compile error, Tn can not be deduced, using recurring tempalte instead
+//struct back<type_list<T0toN_1..., Tn>>{ //compile error, Tn can not be deduced, using recursive template instead
 //    using type = Tn;
 //}
 

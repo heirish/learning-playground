@@ -86,11 +86,12 @@ int main(int argc, char const *argv[])
     //RVALUE
     //RVALUE_DEMO::do_move_semantic_test();
     //RVALUE_DEMO::do_perfect_forwarding_test();
+    RVALUE_DEMO::test_move_forward();
 
     //test_user_defined_literals();
 
     //smart ptr
-    SMART_PTR_DEMO::do_shared_ptr_test();
+    //SMART_PTR_DEMO::do_shared_ptr_test();
     //SMART_PTR_DEMO::do_weak_ptr_test();
     //SMART_PTR_DEMO::do_unique_ptr_test();
     return 0;
