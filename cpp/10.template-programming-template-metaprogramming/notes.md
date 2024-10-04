@@ -133,7 +133,7 @@ extern template bool is_void<void>;
   //but we explicitly stated T=int,Us=<int,int> which happens to work.
   //必须写全，少一个都不行
   ```
-### TODO:template template parameters
+### template template parameters
 -  you need to use template template syntax to pass a parameter whose type is a template dependent on another template like this:
   ```
   //H is a template template parameter
@@ -160,3 +160,44 @@ https://www.youtube.com/watch?v=VBI6TSo8Zog&list=PLWxziGKTUvQFIsbbFcTZz7jOT4TMGn
       };
       ```
 - metafunction example: check whether one tuple contains specific type.`contains_type`
+- template alias `using xxx_t = typename xxx:type;`
+- template variable(since c++14) `static constexpr T xxx_v = xxx::value;`
+- dependent name: https://en.cppreference.com/w/cpp/language/dependent_name
+  - Dependent name is a name depends on template parameters, we need to instruct compiler in order to compile the template class/function properly before actually instiatiate them.
+  - typename -> tell compiler the dependent name is an actual type
+    ```
+    template <class T>
+    struct DependentType
+    {
+      typename T::type a;
+      using Type=typename T::type;
+    };
+    ```
+  - template -> tell compiler the dependent name is a template function/class
+    ```
+    template <class T>
+    struct DependentTemplate
+    {
+      // template function
+      template <class U>
+      static void func() {}
+
+      // template class
+      template <class U>
+      struct ClassName{};
+    };
+
+
+    template <class T1, class T2>
+    void foo()
+    {
+      // 3 ways to call a dependent template function
+      DependentTemplate<T1>::template func<T2>();
+      DependentTemplate<T1>().template func<T2>();
+      (new DependentTemplate<T1>())->template func<T2>();
+
+      // You need both typename and template to reference a dependent template class
+      typename DependentTemplate<T1>::template ClassName<T2> obj;
+      using Type=typename DependentTemplate<T1>::template ClassName<T2>;
+    }
+    ```

@@ -8,14 +8,23 @@
 
 namespace temp_temp_param{
 
+template<typename T>
+struct singleT{};
 //TTP是一个template template parameter, TTP中的typename T可以省略掉T
 //T是一个template parmeter.
-//template<template<typename T> typename TTP, typename T>
-template<template<typename> typename TTP, typename T>
-struct TEST1{
+template<template<typename T> typename TTP, typename T>
+struct TEST1 {
     using type = TTP<T>;
     void printtype() {
         std::cout << __PRETTY_FUNCTION__ << std::endl; //Macro available in GCC
+    }
+};
+
+template<template<typename> typename TTP>
+struct TEST1<TTP,int> {
+    using type = int;
+    void printtype() {
+        std::cout << "partial specialized version:" << __PRETTY_FUNCTION__ << std::endl; //Macro available in GCC
     }
 };
 
@@ -61,24 +70,19 @@ struct TEST6 {
 };
 
 void do_test() {
-    TEST1<std::vector, int>().printtype();
-    static_assert(std::is_same_v<std::vector<int>, TEST1<std::vector, int>::type>);
-    static_assert(std::is_same_v<std::vector<float>, TEST1<std::vector, float>::type>);
-    static_assert(std::is_same_v<std::list<int>, TEST1<std::list, int>::type>);
+    TEST1<singleT, int>().printtype(); //partial specialization
+    static_assert(std::is_same_v<int, TEST1<singleT, int>::type>);
+    static_assert(std::is_same_v<singleT<float>, TEST1<singleT, float>::type>);
 
-    static_assert(std::is_same_v<std::tuple<int, float>, TEST2<std::tuple, int, float>::type>);
     static_assert(std::is_same_v<TP<double, float>, TEST2<TP, double, float>::type>);
 
     static_assert(std::is_same_v<std::tuple<char,char,bool,int>, TEST3<std::tuple, char,char,bool, int>::type>);
 
     static_assert(std::is_same_v<ST<int>, TEST4<ST>::type>);
-    static_assert(std::is_same_v<std::vector<int>, TEST4<std::vector>::type>);
-    static_assert(std::is_same_v<std::list<int>, TEST4<std::list>::type>);
 
     static_assert(std::is_same_v<SI<0>, TEST5<SI, 0>::type>);
 
     //这个实际有啥使用案例?
-    TEST6<std::array>().printtype();
     TEST6<SVI>().printtype();
 }
 }
