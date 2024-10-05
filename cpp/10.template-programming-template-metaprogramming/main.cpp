@@ -1,3 +1,4 @@
+#include "typededuction.hpp"
 #include "functiontemplate.hpp"
 #include "functiontemplatespecialization.hpp"
 #include "classtemplate.hpp"
@@ -9,10 +10,10 @@
 #include "metatypelist.hpp"
 
 #include "advancedmetacattuple.hpp"
-int main(int argc, char const *argv[])
-{
+int main(int argc, char const *argv[]) {
     /* code */
     ////////////////////Basic Template programming////////////////
+    type_deduction::do_test();
     //FUNCTION_TEMPLATE::do_test();
     //FUNCTION_TEMPLATE::vairadic_function_template();
 
@@ -38,5 +39,6 @@ int main(int argc, char const *argv[])
     ////////////////Advances template metaprogramming////////////////////
     cat_tuple::do_tuple_test();
     cat_tuple::do_tuple_cast_test();
+    cat_tuple::test_framwork_use();
     return 0;
 }
