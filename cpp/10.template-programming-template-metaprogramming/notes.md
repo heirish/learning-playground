@@ -207,9 +207,56 @@ https://www.youtube.com/watch?v=VBI6TSo8Zog&list=PLWxziGKTUvQFIsbbFcTZz7jOT4TMGn
     using metafunctions + "using type="  to manipulate the type data.
     - such as "push_back" in metatypelist.hpp
     - such as "tuple_cat_result" in advancedmetatuplefilter.hpp
+    - 后面high-performance metaprogramming也是讨论的这一部份内容, 处理的是compile time的type数据，并不是run time的data数据
     ```
   - Ensure no unneccessary copies/movies at run time
     - lvalues + rvalues
     - perfect forwarding
 - implement algorithms using metaprogramming
   ![](images/write-algorithms-for-tuple.png)
+###  high-performance metaprogramming
+blow up compilation time,improve compile time performance for meta functions.
+https://odinthenerd.blogspot.com/2014/07/introduction-to-c-metaprogramming-part-1.html?view=sidebar
+
+https://github.com/chieltbest/metacheck
+- how to measure? compiler本身的负载
+- compilation time operation cost
+  ![](images/op-cost-compile-time.png)
+  从上到下cost变大，SFINAE cost最大
+- Eager vs Lazy instantiate
+  - Eager: Directly instantiate everything so the answer can be returned.
+  - Lazy: Return a function that can be used to compute the answer. 
+- Rules of high-performance metaprogramming
+  - techniques to reduce instantiation
+    - 1. Prefer lazy over eager template instantiation: by defining instaniation untill strictly neccessary you minimize expensive type instantiations.
+    - 2. composed: recursive derived to function composition
+    - 3. fast_track: partial specialization recursive derive.
+    - 4. defaults: give default value for template params in above 3.
+    - 5. selection:cover more cases of above 4 using selection according to input number.
+  - techniques to bypass intermediate types introduced when compose functions to implement complex algorithms
+     - remove_if = transform + join. 输入为typelist<elements...>, tranform生成中间类型typelist<typelist<element1>, typelist<>, typelist<element2>>, join生成最终类型typelist<element1, element2>, 实际上中间临时变量并不需要，如何避免生成呢
+     - New way of writing metafunctions, Fastest possible metaprograms
+      - Allows for free composition of metafunctions.
+      - Tacit style
+        ```
+        bash:
+          transform -predicate| join | continuation 
+        
+        nested programming:
+          continuation<join<tranform<predicate>>>
+
+        Tacti style metaprogramming: 将next step作为template type parameter传入metafunction
+        template<typename PREDICATE, typename CONTINUATION=listify> //remove_if 的next step = CONTINUATION
+        struct remove_if {
+          template<typename... Ts>
+          using f = typename transform<wrap_if_not<PREDICATE>, //transform的next step = join<CONTINUATION>
+                                      join<CONTINUATION>   //join的next stp = CONTINUATION
+                                      >::template f<Ts...>;
+        };
+        struct listify {
+	      template <typename... Ts>
+	      using f = type_list<Ts...>;
+        }
+        //其中在transform, join, CONTINATION之间传递的全是element types,最后由CONTINUEATION将join输出的element types转换成最终的数据类型type_list<Ts...>
+
+        ```
