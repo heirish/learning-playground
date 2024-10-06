@@ -203,6 +203,13 @@ https://www.youtube.com/watch?v=VBI6TSo8Zog&list=PLWxziGKTUvQFIsbbFcTZz7jOT4TMGn
     ```
 - metaprogramming manipulate data(compile time/run time)
   - figure out steps at compile time
+    ```
+    using metafunctions + "using type="  to manipulate the type data.
+    - such as "push_back" in metatypelist.hpp
+    - such as "tuple_cat_result" in advancedmetatuplefilter.hpp
+    ```
   - Ensure no unneccessary copies/movies at run time
     - lvalues + rvalues
     - perfect forwarding
+- implement algorithms using metaprogramming
+  ![](images/write-algorithms-for-tuple.png)
