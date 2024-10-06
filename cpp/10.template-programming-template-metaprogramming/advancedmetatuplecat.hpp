@@ -101,8 +101,24 @@ namespace detail {
 //     };
 // };
 
+// why previous version don't work for reference type element in tuple?
+//  before this update the tuple_cat function removes any references because it
+//  uses the deduction guide which includes a call to unwrap_ref_decay, which in
+//  turn uses std::decay. Simply removing this part of the deduction guide
+//  however does not help us. Because we have been forwarding the inputs, we
+//  have turned everything into either lvalue or rvalue references. As such, we
+//  can no longer distinguish whether we had a value or a reference as the
+//  original input. This is why we have to keep track of the input types and how
+//  they effect the final output type separately, using the tuple_cat_result_t
+//  metafunction created in step 3 of the homework assignment. If we know the
+//  final type, we can explicitly create our output with this type, keeping
+//  reference inputs references and value input value types.
+
 // tuple_cat_result is to refer the cat result type, is the key to support
-// reference type element in tuple.
+// reference type element in tuple, it is used to track the input types and get
+// the actual output type.
+// in make_tuple_from_fwd_tuple, before:Tuple{},
+// after:Tuple<type...>{}
 template <typename... TUPLES> struct tuple_cat_result;
 template <typename TUPLE> struct tuple_cat_result<TUPLE> {
     using type = TUPLE;
