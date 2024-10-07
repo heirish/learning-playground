@@ -309,5 +309,15 @@
    before you use it, you need to call .lock() to create a shared_ptr from it.
 - unique_ptr: exclusive ownership, light weighted smart pointer
   - unique_ptr.release() give up the ownership, while shared_ptr.get() doesn't give up the ownership
-
+### integer_sequence
+```
+template<typename T, T...Ints>
+struct integer_sequence;
+```
+实际就是一个整型数列的metafunction wrapper,主要用于template programming
+用得多的是其alias: index_sequence及其helper函数
+template<std::size_t... Ints>
+using index_sequence = std::integer_sequence<std::size_t, Ints...>;
+template<std::size_t N>
+using make_index_sequence = std::make_integer_sequence<std::size_t, N>; //自动生成从0~N-1的sequence
 ### Regex
